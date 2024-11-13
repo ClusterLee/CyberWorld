@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>微信界面</title>
     <!-- 引入Vue.js -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
@@ -38,6 +38,12 @@
                             <div class="message">{{chat.lastMessage}}</div>
                         </div>
                         <div class="time">{{chat.time}}</div>
+                        <div v-if="chat.unread" 
+                             class="badge"
+                             :class="{ 'large': chat.unread > 99 }"
+                        >
+                            {{ chat.unread > 99 ? '99+' : chat.unread }}
+                        </div>
                     </div>
                 </div>
 
@@ -105,6 +111,8 @@
                         <span v-for="letter in letters" 
                             :key="letter"
                             @click="scrollToLetter(letter)"
+                            @touchstart="handleLetterTouchStart($event, letter)"
+                            @touchmove.prevent
                         >{{letter}}</span>
                     </div>
                 </div>
@@ -315,7 +323,7 @@
                     </div>
                 </div>
 
-                <!-- 底部操作按钮 -->
+                <!-- 底部操作钮 -->
                 <div class="bottom-actions">
                     <div class="action-buttons">
                         <div class="action-btn" @click="startChat(currentContact)">
@@ -359,33 +367,188 @@
                     chats: [
                         {
                             id: 1,
-                            name: '张三',
-                            avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix',
-                            lastMessage: '你好啊！',
-                            time: '下午 3:30',
+                            name: '微信团队',
+                            avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=wx-team',
+                            lastMessage: '欢迎使用微信',
+                            time: '12:00',
+                            unread: 1,
+                            isOfficial: true,
                             messages: [
                                 {
                                     id: 1,
                                     type: 'text',
-                                    content: '你好啊！',
+                                    content: '欢迎使用微信',
                                     isSelf: false,
-                                    time: '下午 3:30'
+                                    time: '12:00'
                                 }
                             ]
                         },
                         {
                             id: 2,
-                            name: '李四',
-                            avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka',
-                            lastMessage: '明天！',
-                            time: '上午 11:20',
+                            name: '文件传输助手',
+                            avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=file-helper',
+                            lastMessage: '您的文件已发送成功',
+                            time: '11:30',
+                            unread: 0,
+                            isSystem: true,
                             messages: [
                                 {
                                     id: 1,
                                     type: 'text',
-                                    content: '明天！',
+                                    content: '您的文件已发送成功',
                                     isSelf: false,
-                                    time: '上午 11:20'
+                                    time: '11:30'
+                                }
+                            ]
+                        },
+                        {
+                            id: 3,
+                            name: '产品开发群',
+                            avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=产品开发群',
+                            lastMessage: 'Alice: 新功能已经上线了，大家可以测试一下',
+                            time: '10:45',
+                            unread: 12,
+                            isGroup: true,
+                            messages: [
+                                {
+                                    id: 1,
+                                    type: 'text',
+                                    content: '新功能已经上线了，大家可以测试一下',
+                                    isSelf: false,
+                                    time: '10:45',
+                                    sender: 'Alice'
+                                }
+                            ]
+                        },
+                        {
+                            id: 4,
+                            name: 'Alice',
+                            avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Alice',
+                            lastMessage: '好的，下午见',
+                            time: '10:30',
+                            unread: 0,
+                            messages: [
+                                {
+                                    id: 1,
+                                    type: 'text',
+                                    content: '下午有个会议需要讨论',
+                                    isSelf: false,
+                                    time: '10:25'
+                                },
+                                {
+                                    id: 2,
+                                    type: 'text',
+                                    content: '好的，下午见',
+                                    isSelf: true,
+                                    time: '10:30'
+                                }
+                            ]
+                        },
+                        {
+                            id: 5,
+                            name: 'Bob',
+                            avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Bob',
+                            lastMessage: '项目进展如何？',
+                            time: '09:15',
+                            unread: 3,
+                            messages: [
+                                {
+                                    id: 1,
+                                    type: 'text',
+                                    content: '项目进展如何？',
+                                    isSelf: false,
+                                    time: '09:15'
+                                }
+                            ]
+                        },
+                        {
+                            id: 6,
+                            name: '技术支持群',
+                            avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=技术支持群',
+                            lastMessage: 'Tom: 服务器状态已恢复正常',
+                            time: '09:00',
+                            unread: 5,
+                            isGroup: true,
+                            messages: [
+                                {
+                                    id: 1,
+                                    type: 'text',
+                                    content: '服务器状态已恢复正常',
+                                    isSelf: false,
+                                    time: '09:00',
+                                    sender: 'Tom'
+                                }
+                            ]
+                        },
+                        {
+                            id: 7,
+                            name: 'Emma',
+                            avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Emma',
+                            lastMessage: '周末一起去看电影吗？',
+                            time: '昨天',
+                            unread: 1,
+                            messages: [
+                                {
+                                    id: 1,
+                                    type: 'text',
+                                    content: '周末一起去看电影吗？',
+                                    isSelf: false,
+                                    time: '昨天'
+                                }
+                            ]
+                        },
+                        {
+                            id: 8,
+                            name: '家庭群',
+                            avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=家庭群',
+                            lastMessage: '妈妈：记得回家吃饭',
+                            time: '昨天',
+                            unread: 0,
+                            isGroup: true,
+                            messages: [
+                                {
+                                    id: 1,
+                                    type: 'text',
+                                    content: '记得回家吃饭',
+                                    isSelf: false,
+                                    time: '昨天',
+                                    sender: '妈妈'
+                                }
+                            ]
+                        },
+                        {
+                            id: 9,
+                            name: 'Jack',
+                            avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jack',
+                            lastMessage: '项目文档已更新',
+                            time: '星期二',
+                            unread: 0,
+                            messages: [
+                                {
+                                    id: 1,
+                                    type: 'text',
+                                    content: '项目文档已更新',
+                                    isSelf: false,
+                                    time: '星期二'
+                                }
+                            ]
+                        },
+                        {
+                            id: 10,
+                            name: '同学会群',
+                            avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=同学会群',
+                            lastMessage: 'Lisa: 下个月聚会时间定了吗？',
+                            time: '星期一',
+                            unread: 8,
+                            isGroup: true,
+                            messages: [
+                                {
+                                    id: 1,
+                                    type: 'text',
+                                    content: '下个月聚会时间定了吗？',
+                                    isSelf: false,
+                                    time: '星期一',
+                                    sender: 'Lisa'
                                 }
                             ]
                         }
@@ -410,6 +573,12 @@
                                     name: 'Amy',
                                     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Amy',
                                     region: '北京'
+                                },
+                                {
+                                    id: 3,
+                                    name: 'Alex',
+                                    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Alex',
+                                    region: '上海'
                                 }
                             ]
                         },
@@ -417,16 +586,22 @@
                             letter: 'B',
                             contacts: [
                                 {
-                                    id: 3,
+                                    id: 4,
                                     name: 'Bob',
                                     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Bob',
                                     region: '上海'
                                 },
                                 {
-                                    id: 4,
+                                    id: 5,
                                     name: 'Bill',
                                     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Bill',
                                     region: '广东 广州'
+                                },
+                                {
+                                    id: 6,
+                                    name: 'Bruce',
+                                    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Bruce',
+                                    region: '浙江 杭州'
                                 }
                             ]
                         },
@@ -434,10 +609,118 @@
                             letter: 'C',
                             contacts: [
                                 {
-                                    id: 5,
+                                    id: 7,
                                     name: 'Cindy',
                                     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Cindy',
                                     region: '浙江 杭州'
+                                },
+                                {
+                                    id: 8,
+                                    name: 'Chris',
+                                    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Chris',
+                                    region: '江苏 南京'
+                                }
+                            ]
+                        },
+                        {
+                            letter: 'D',
+                            contacts: [
+                                {
+                                    id: 9,
+                                    name: 'David',
+                                    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=David',
+                                    region: '四川 成都'
+                                },
+                                {
+                                    id: 10,
+                                    name: 'Daniel',
+                                    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Daniel',
+                                    region: '湖北 武汉'
+                                }
+                            ]
+                        },
+                        {
+                            letter: 'L',
+                            contacts: [
+                                {
+                                    id: 11,
+                                    name: 'Lucy',
+                                    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Lucy',
+                                    region: '福建 厦门'
+                                },
+                                {
+                                    id: 12,
+                                    name: 'Linda',
+                                    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Linda',
+                                    region: '山东 青岛'
+                                }
+                            ]
+                        },
+                        {
+                            letter: 'M',
+                            contacts: [
+                                {
+                                    id: 13,
+                                    name: 'Mike',
+                                    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Mike',
+                                    region: '江西 南昌'
+                                },
+                                {
+                                    id: 14,
+                                    name: 'Mary',
+                                    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Mary',
+                                    region: '安徽 合肥'
+                                }
+                            ]
+                        },
+                        {
+                            letter: 'S',
+                            contacts: [
+                                {
+                                    id: 15,
+                                    name: 'Sarah',
+                                    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah',
+                                    region: '重庆'
+                                },
+                                {
+                                    id: 16,
+                                    name: 'Steve',
+                                    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Steve',
+                                    region: '天津'
+                                }
+                            ]
+                        },
+                        {
+                            letter: 'W',
+                            contacts: [
+                                {
+                                    id: 17,
+                                    name: 'William',
+                                    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=William',
+                                    region: '河北 石家庄'
+                                },
+                                {
+                                    id: 18,
+                                    name: 'Wendy',
+                                    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Wendy',
+                                    region: '���西 西安'
+                                }
+                            ]
+                        },
+                        {
+                            letter: 'Z',
+                            contacts: [
+                                {
+                                    id: 19,
+                                    name: 'Zack',
+                                    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Zack',
+                                    region: '湖南 长沙'
+                                },
+                                {
+                                    id: 20,
+                                    name: 'Zoey',
+                                    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Zoey',
+                                    region: '云南 昆明'
                                 }
                             ]
                         }
@@ -561,7 +844,35 @@
                 scrollToLetter(letter) {
                     const element = document.querySelector(`[data-letter="${letter}"]`);
                     if (element) {
-                        element.scrollIntoView({ behavior: 'smooth' });
+                        const container = document.querySelector('.contact-list');
+                        const containerRect = container.getBoundingClientRect();
+                        const elementRect = element.getBoundingClientRect();
+                        const offset = elementRect.top - containerRect.top;
+                        
+                        container.scrollTo({
+                            top: container.scrollTop + offset - 60, // 考虑顶部固定区域高度
+                            behavior: 'smooth'
+                        });
+                    }
+                },
+                handleLetterTouchStart(event, letter) {
+                    event.preventDefault();
+                    this.scrollToLetter(letter);
+                },
+                receiveMessage(chatId, message) {
+                    const chat = this.chats.find(c => c.id === chatId);
+                    if (chat) {
+                        if (!chat.messages) {
+                            chat.messages = [];
+                        }
+                        chat.messages.push(message);
+                        chat.lastMessage = message.content;
+                        chat.time = new Date().toLocaleTimeString();
+                        
+                        // 如果不是当前聊天，增加未读消息数
+                        if (this.currentChat?.id !== chat.id) {
+                            chat.unread = (chat.unread || 0) + 1;
+                        }
                     }
                 }
             },
