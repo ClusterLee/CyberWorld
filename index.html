@@ -84,6 +84,7 @@
                         <div class="contact-section" 
                             v-for="section in contactSections" 
                             :key="section.letter"
+                            :data-letter="section.letter"
                         >
                             <div class="section-title">{{section.letter}}</div>
                             <div class="contact-item" 
@@ -213,7 +214,7 @@
             <!-- 聊天详情页面 -->
             <div class="page chat-page" :class="{ 'slide-in': showChat }">
                 <div class="header">
-                    <div class="back-button" @click="closeChat">
+                    <div class="back-button" @click="goBack">
                         <!-- 移除图标字体，使用 CSS 绘制的箭头 -->
                     </div>
                     <div class="title">{{ currentChat?.name }}</div>
@@ -222,9 +223,9 @@
                     </div>
                 </div>
                 <div class="chat-content">
-                    <div class="chat-messages" v-if="messages.length">
+                    <div class="chat-messages" v-if="currentChat && currentChat.messages && currentChat.messages.length">
                         <div 
-                            v-for="msg in messages" 
+                            v-for="msg in currentChat.messages" 
                             :key="msg.id"
                             class="message-item"
                             :class="{ 'self': msg.isSelf }"
@@ -278,7 +279,7 @@
                 </div>
             </div>
 
-            <!-- 联系人详情页面 -->
+            <!-- 联人详情页面 -->
             <div class="page contact-detail-page" :class="{ 'slide-in': showContactDetail }">
                 <!-- 顶部导航栏 -->
                 <div class="header">
@@ -361,39 +362,86 @@
                             name: '张三',
                             avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix',
                             lastMessage: '你好啊！',
-                            time: '下午 3:30'
+                            time: '下午 3:30',
+                            messages: [
+                                {
+                                    id: 1,
+                                    type: 'text',
+                                    content: '你好啊！',
+                                    isSelf: false,
+                                    time: '下午 3:30'
+                                }
+                            ]
                         },
                         {
                             id: 2,
                             name: '李四',
                             avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka',
                             lastMessage: '明天！',
-                            time: '上午 11:20'
+                            time: '上午 11:20',
+                            messages: [
+                                {
+                                    id: 1,
+                                    type: 'text',
+                                    content: '明天！',
+                                    isSelf: false,
+                                    time: '上午 11:20'
+                                }
+                            ]
                         }
                     ],
                     showChat: false,
                     currentChat: null,
-                    messages: [],
+                    showContactDetail: false,
+                    currentContact: null,
+                    letters: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'],
                     contactSections: [
                         {
                             letter: 'A',
                             contacts: [
-                                { id: 1, name: '阿明', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Ming' },
-                                { id: 2, name: '阿华', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Hua' }
+                                {
+                                    id: 1,
+                                    name: 'Alice',
+                                    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Alice',
+                                    region: '广东 深圳'
+                                },
+                                {
+                                    id: 2,
+                                    name: 'Amy',
+                                    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Amy',
+                                    region: '北京'
+                                }
                             ]
                         },
                         {
                             letter: 'B',
                             contacts: [
-                                { id: 3, name: '白云', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Cloud' },
-                                { id: 4, name: '包子', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Bun' }
+                                {
+                                    id: 3,
+                                    name: 'Bob',
+                                    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Bob',
+                                    region: '上海'
+                                },
+                                {
+                                    id: 4,
+                                    name: 'Bill',
+                                    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Bill',
+                                    region: '广东 广州'
+                                }
+                            ]
+                        },
+                        {
+                            letter: 'C',
+                            contacts: [
+                                {
+                                    id: 5,
+                                    name: 'Cindy',
+                                    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Cindy',
+                                    region: '浙江 杭州'
+                                }
                             ]
                         }
-                        // ... 更多联系人分组
-                    ],
-                    letters: ['↑', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '#'],
-                    showContactDetail: false,
-                    currentContact: null,
+                    ]
                 }
             },
             methods: {
@@ -401,14 +449,18 @@
                     this.currentTab = tabId;
                 },
                 openChat(chat) {
+                    if (!chat.messages) {
+                        chat.messages = [];
+                    }
                     this.currentChat = chat;
                     this.showChat = true;
                 },
-                closeChat() {
+                goBack() {
+                    // 关闭聊天页面
                     this.showChat = false;
-                    setTimeout(() => {
-                        this.currentChat = null;
-                    }, 300); // 等待动画结束后清空当前聊天
+                    this.currentChat = null;
+                    // 直接切换到微信标签页
+                    this.currentTab = 'wechat';
                 },
                 handleImageSelect(event) {
                     const files = Array.from(event.target.files);
@@ -429,25 +481,44 @@
                     this.imageFiles.splice(index, 1);
                 },
                 sendMessage() {
+                    if (!this.currentChat) {
+                        console.warn('No current chat selected');
+                        return;
+                    }
+
+                    if (!this.currentChat.messages) {
+                        this.currentChat.messages = [];
+                    }
+
                     if (this.messageText.trim() || this.selectedImages.length) {
                         if (this.messageText.trim()) {
-                            this.messages.push({
+                            const textMessage = {
                                 id: Date.now(),
                                 type: 'text',
                                 content: this.messageText,
                                 isSelf: true,
                                 time: new Date().toLocaleTimeString()
-                            });
+                            };
+                            this.currentChat.messages.push(textMessage);
+                            // 更新最后一条消息
+                            this.currentChat.lastMessage = this.messageText;
+                            this.currentChat.time = new Date().toLocaleTimeString();
                         }
                         
                         this.selectedImages.forEach((image, index) => {
-                            this.messages.push({
+                            const imageMessage = {
                                 id: Date.now() + index + 1,
                                 type: 'image',
                                 content: image,
                                 isSelf: true,
                                 time: new Date().toLocaleTimeString()
-                            });
+                            };
+                            this.currentChat.messages.push(imageMessage);
+                            // 如果是最后一张图片，更新最后一条消息
+                            if (index === this.selectedImages.length - 1) {
+                                this.currentChat.lastMessage = '[图片]';
+                                this.currentChat.time = new Date().toLocaleTimeString();
+                            }
                         });
                         
                         this.messageText = '';
@@ -468,9 +539,9 @@
                 },
                 closeContactDetail() {
                     this.showContactDetail = false;
-                    setTimeout(() => {
-                        this.currentContact = null;
-                    }, 300);
+                    this.selectedContact = null;
+                    // 返回到微信标签页
+                    this.activeTab = 'chats';
                 },
                 startChat(contact) {
                     this.closeContactDetail();
@@ -486,12 +557,18 @@
                         this.chats.unshift(chat);
                     }
                     this.openChat(chat);
+                },
+                scrollToLetter(letter) {
+                    const element = document.querySelector(`[data-letter="${letter}"]`);
+                    if (element) {
+                        element.scrollIntoView({ behavior: 'smooth' });
+                    }
                 }
             },
             computed: {
                 getCurrentTabName() {
                     const currentTab = this.tabs.find(tab => tab.id === this.currentTab);
-                    return currentTab ? currentTab.name : '微信';
+                    return currentTab ? currentTab.name : '信';
                 }
             }
         });
