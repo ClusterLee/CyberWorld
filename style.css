@@ -1,0 +1,1205 @@
+.wechat-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: rgba(247, 247, 247, 0.3);
+    position: relative;
+    overflow: hidden;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    perspective: 1000;
+    -webkit-perspective: 1000;
+}
+
+.wechat-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    z-index: -1;
+}
+
+.header {
+    height: 44px;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 17px;
+    font-weight: 500;
+}
+
+.icons {
+    margin-left: auto;
+    display: flex;
+    gap: 15px;
+}
+
+.chat-list {
+    flex: 1;
+    overflow-y: auto;
+    background: transparent;
+    padding: 8px 0;
+    padding-bottom: 60px;
+}
+
+.chat-item {
+    display: flex;
+    padding: 12px 15px;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(238, 238, 238, 0.5);
+    margin: 0 8px 8px 8px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.chat-item:hover {
+    background: rgba(255, 255, 255, 0.8);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.chat-item:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+}
+
+.avatar img {
+    width: 48px;
+    height: 48px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.content {
+    flex: 1;
+    margin-left: 10px;
+}
+
+.name {
+    font-size: 16px;
+    margin-bottom: 4px;
+}
+
+.message {
+    font-size: 14px;
+    color: #999;
+}
+
+.time {
+    font-size: 12px;
+    color: #999;
+}
+
+.tab-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 56px;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-top: 0.5px solid rgba(0, 0, 0, 0.1);
+    padding-bottom: env(safe-area-inset-bottom);
+    z-index: 100;
+}
+
+.tab-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 0;
+    position: relative;
+    cursor: pointer;
+}
+
+.tab-item i {
+    width: 24px;
+    height: 24px;
+    margin-bottom: 4px;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tab-item span {
+    font-size: 12px;
+    color: #666;
+    transition: color 0.3s ease;
+}
+
+.tab-item.active span {
+    color: #07c160;
+    font-weight: 500;
+}
+
+.icon-chat::before,
+.icon-contacts::before,
+.icon-discover::before,
+.icon-me::before {
+    content: '';
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background-size: 24px;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+}
+
+.icon-chat::before {
+    background-image: url('https://cdn-icons-png.flaticon.com/512/1380/1380370.png');
+}
+
+.icon-contacts::before {
+    background-image: url('https://cdn-icons-png.flaticon.com/512/1250/1250592.png');
+}
+
+.icon-discover::before {
+    background-image: url('https://cdn-icons-png.flaticon.com/512/2089/2089363.png');
+}
+
+.icon-me::before {
+    background-image: url('https://cdn-icons-png.flaticon.com/512/1077/1077063.png');
+}
+
+/* 添加一些基础样式重置 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+}
+
+.chat-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-list::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+}
+
+.chat-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* 页面切换相关样式 */
+.page {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transition: transform 0.3s ease;
+    background: rgba(247, 247, 247, 0.3);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+.main-page {
+    transform: translateX(0);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.main-page.slide-out {
+    transform: translateX(-100%);
+}
+
+.chat-page {
+    transform: translateX(100%);
+}
+
+.chat-page.slide-in {
+    transform: translateX(0);
+}
+
+/* 聊天详情页样式 */
+.back-button {
+    padding: 10px;
+    margin-left: -10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.back-button:hover {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+}
+
+.back-button:active {
+    transform: scale(0.95);
+}
+
+.back-button::before {
+    content: '';
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-left: 2px solid #333;
+    border-bottom: 2px solid #333;
+    transform: rotate(45deg);
+    margin-right: -4px;
+}
+
+.chat-page .header {
+    display: grid;
+    grid-template-columns: 40px 1fr 40px;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.chat-page .header .title {
+    text-align: center;
+    margin: 0 auto;
+    font-weight: 500;
+    color: #333;
+}
+
+.chat-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.chat-messages {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    width: 100%;
+    padding-bottom: 15px;
+}
+
+.message-hint {
+    color: #999;
+    font-size: 14px;
+}
+
+/* 添加点击效果 */
+.chat-item {
+    cursor: pointer;
+}
+
+.chat-item:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+}
+
+/* 聊天输入框区域样式 */
+.chat-input-area {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 10px 15px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    z-index: 100;
+}
+
+.input-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #666;
+    padding: 0 4px;
+}
+
+.input-toolbar i {
+    font-size: 24px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 4px;
+    border-radius: 4px;
+}
+
+.input-toolbar i:hover {
+    color: #07c160;
+    transform: scale(1.1);
+}
+
+.input-box {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.input-box:focus-within {
+    border-color: #07c160;
+    box-shadow: 0 0 0 2px rgba(7, 193, 96, 0.1);
+}
+
+.input-box input {
+    width: 100%;
+    height: 36px;
+    padding: 0 12px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    background: transparent;
+}
+
+/* 优化聊天页面的整体布局 */
+.chat-page {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* 发送按钮样式 */
+.send-btn {
+    padding: 6px 12px;
+    background: #07c160;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: all 0.3s ease;
+}
+
+.send-btn.active {
+    opacity: 1;
+}
+
+.send-btn:hover {
+    background: #06ae56;
+}
+
+.send-btn:active {
+    transform: scale(0.95);
+}
+
+/* 图片上传按钮样式 */
+.upload-btn {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    margin-right: 6px;
+}
+
+.upload-btn:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.upload-btn:active {
+    transform: scale(0.95);
+}
+
+.icon-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    opacity: 0.6;
+    transition: all 0.2s ease;
+}
+
+.upload-btn:hover .icon-image {
+    opacity: 1;
+}
+
+/* 聊天消息样式 */
+.chat-messages {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 0;
+}
+
+.message-item {
+    max-width: 70%;
+    padding: 10px 12px;
+    border-radius: 3px 15px 15px 15px;
+    background: white;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    position: relative;
+    margin: 2px 0;
+}
+
+.message-item.self {
+    align-self: flex-end;
+    background: #95ec69;
+    border-radius: 15px 3px 15px 15px;
+}
+
+.message-image {
+    max-width: 200px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.message-image:hover {
+    transform: scale(1.02);
+}
+
+/* 通讯录页面样式 */
+.contacts-page {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: #f7f7f7;
+    position: relative;
+}
+
+/* 搜索框容器 */
+.search-container {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    padding: 8px 12px;
+    background: #f7f7f7;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* 搜索框样式优化 */
+.search-box {
+    background: #ffffff;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    height: 36px;
+    padding: 0 12px;
+}
+
+.search-box .icon-search {
+    color: #888;
+    font-size: 15px;
+    margin-right: 6px;
+}
+
+.search-box input {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 15px;
+    width: 100%;
+    color: #333;
+}
+
+.search-box input::placeholder {
+    color: #999;
+}
+
+/* 联系人列表容器 */
+.contact-list {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 50px;
+}
+
+/* 特殊联系人组样式 */
+.special-contacts {
+    background: #fff;
+    margin-bottom: 8px;
+}
+
+.special-contacts .contact-item {
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    border-bottom: 0.5px solid rgba(0, 0, 0, 0.05);
+}
+
+.special-contacts .contact-item:last-child {
+    border-bottom: none;
+}
+
+/* 联系人分组标题 */
+.section-title {
+    padding: 8px 16px;
+    color: #666;
+    font-size: 14px;
+    background: #f7f7f7;
+    position: sticky;
+    top: 52px; /* 调整粘性定位的位置，考虑搜索框高度 */
+    z-index: 5;
+}
+
+/* 联系人项样式 */
+.contact-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    background: #fff;
+    border-bottom: 0.5px solid rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.contact-item:active {
+    background: #f0f0f0;
+}
+
+.contact-item .avatar {
+    width: 42px;
+    height: 42px;
+    margin-right: 12px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.contact-item .avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.contact-item .name {
+    font-size: 16px;
+    color: #333;
+}
+
+/* 字母索引样式优化 */
+.letter-index {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    padding: 8px 4px;
+    background: transparent;
+    z-index: 10;
+}
+
+.letter-index span {
+    font-size: 11px;
+    color: #07c160;
+    padding: 2px 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.letter-index span:active {
+    color: #ffffff;
+    background: #07c160;
+    border-radius: 8px;
+}
+
+/* 联系人分组样式 */
+.contact-section {
+    background: #fff;
+    margin-bottom: 8px;
+}
+
+/* 特殊联系人组（如新的朋友、群聊等）样式 */
+.special-contacts {
+    margin-bottom: 8px;
+}
+
+.special-contacts .contact-item {
+    padding: 12px 16px;
+}
+
+.special-contacts .avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.special-contacts .avatar i {
+    font-size: 24px;
+    color: #07c160;
+}
+
+/* 新的朋友图标 */
+.icon-new-friend {
+    background: #57be6a;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-new-friend::before {
+    content: '';
+    width: 24px;
+    height: 24px;
+    background-image: url('https://cdn-icons-png.flaticon.com/512/9840/9840707.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    filter: invert(100%);
+}
+
+/* 群聊图标 */
+.icon-group {
+    background: #57be6a;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-group::before {
+    content: '';
+    width: 24px;
+    height: 24px;
+    background-image: url('https://cdn-icons-png.flaticon.com/512/9840/9840701.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    filter: invert(100%);
+}
+
+/* 标签图标 */
+.icon-tag {
+    background: #57be6a;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-tag::before {
+    content: '';
+    width: 24px;
+    height: 24px;
+    background-image: url('https://cdn-icons-png.flaticon.com/512/9840/9840765.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    filter: invert(100%);
+}
+
+/* 公众号图标 */
+.icon-official {
+    background: #57be6a;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-official::before {
+    content: '';
+    width: 24px;
+    height: 24px;
+    background-image: url('https://cdn-icons-png.flaticon.com/512/9840/9840719.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    filter: invert(100%);
+}
+
+/* 发现页面样式 */
+.discover-page {
+    flex: 1;
+    background: rgba(247, 247, 247, 0.5);
+}
+
+.discover-section {
+    margin-bottom: 8px;
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.discover-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.discover-item i {
+    font-size: 22px;
+    margin-right: 15px;
+    color: #07c160;
+}
+
+.discover-item span {
+    flex: 1;
+}
+
+.icon-arrow {
+    color: #ccc;
+    font-size: 14px;
+}
+
+/* 我的页面样式 */
+.me-page {
+    flex: 1;
+    background: rgba(247, 247, 247, 0.5);
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    padding: 20px 15px;
+    background: rgba(255, 255, 255, 0.8);
+    margin-bottom: 8px;
+}
+
+.user-info .avatar img {
+    width: 60px;
+    height: 60px;
+    border-radius: 6px;
+}
+
+.user-info .info {
+    flex: 1;
+    margin-left: 15px;
+}
+
+.user-info .name {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.user-info .wxid {
+    font-size: 14px;
+    color: #666;
+}
+
+.me-section {
+    background: rgba(255, 255, 255, 0.8);
+    margin-bottom: 8px;
+}
+
+.me-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.me-item i:first-child {
+    font-size: 22px;
+    margin-right: 15px;
+    color: #07c160;
+}
+
+/* 添加消息时间样式 */
+.message-time {
+    font-size: 12px;
+    color: #999;
+    text-align: center;
+    margin: 10px 0;
+    width: 100%;
+}
+
+/* 定义各个图标样式 */
+.icon-chat::before {
+    content: '';
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    background: url('https://cdn-icons-png.flaticon.com/512/1380/1380370.png') no-repeat center;
+    background-size: contain;
+    opacity: 0.7;
+}
+
+.icon-contacts::before {
+    content: '';
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    background: url('https://cdn-icons-png.flaticon.com/512/1250/1250592.png') no-repeat center;
+    background-size: contain;
+    opacity: 0.7;
+}
+
+.icon-discover::before {
+    content: '';
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    background: url('https://cdn-icons-png.flaticon.com/512/2089/2089363.png') no-repeat center;
+    background-size: contain;
+    opacity: 0.7;
+}
+
+.icon-me::before {
+    content: '';
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    background: url('https://cdn-icons-png.flaticon.com/512/1077/1077063.png') no-repeat center;
+    background-size: contain;
+    opacity: 0.7;
+}
+
+/* 激活状态的图标样式 */
+.tab-item.active i::before {
+    opacity: 1;
+    filter: invert(57%) sepia(75%) saturate(1304%) hue-rotate(93deg) brightness(95%) contrast(89%);
+}
+
+/* 悬停状态的图标样式 */
+.tab-item:hover i::before {
+    opacity: 0.9;
+}
+
+/* 添加图片预览区域样式 */
+.image-preview {
+    position: relative;
+    padding: 8px;
+    background: rgba(0, 0, 0, 0.03);
+    border-radius: 4px;
+    margin: 8px;
+    display: inline-block;
+}
+
+.image-preview img {
+    max-height: 100px;
+    max-width: 150px;
+    border-radius: 4px;
+    object-fit: contain;
+}
+
+.image-preview .icon-close {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* 添加关闭图标的样式 */
+.image-preview .icon-close::before,
+.image-preview .icon-close::after {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 2px;
+    background: white;
+    border-radius: 1px;
+}
+
+.image-preview .icon-close::before {
+    transform: rotate(45deg);
+}
+
+.image-preview .icon-close::after {
+    transform: rotate(-45deg);
+}
+
+/* 优化悬停效果 */
+.image-preview .icon-close:hover {
+    background: rgba(0, 0, 0, 0.8);
+    transform: scale(1.1);
+}
+
+.image-preview .icon-close:active {
+    transform: scale(0.95);
+}
+
+/* 修改输入框区域样式以适应图片预览 */
+.input-box {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-box input {
+    min-height: 36px;
+}
+
+/* 添加多图片预览区域样式 */
+.image-preview-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px;
+    background: rgba(0, 0, 0, 0.03);
+    border-radius: 4px;
+    margin: 8px;
+}
+
+.image-preview {
+    position: relative;
+    display: inline-block;
+}
+
+.image-preview img {
+    width: 80px;
+    height: 80px;
+    border-radius: 4px;
+    object-fit: cover;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.image-preview .icon-close {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.image-preview .icon-close::before,
+.image-preview .icon-close::after {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 2px;
+    background: white;
+    border-radius: 1px;
+}
+
+.image-preview .icon-close::before {
+    transform: rotate(45deg);
+}
+
+.image-preview .icon-close::after {
+    transform: rotate(-45deg);
+}
+
+.image-preview .icon-close:hover {
+    background: rgba(0, 0, 0, 0.8);
+    transform: scale(1.1);
+}
+
+.image-preview .icon-close:active {
+    transform: scale(0.95);
+}
+
+/* 联系人详情页面样式优化 */
+.contact-detail-page {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #f7f7f7;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+}
+
+.contact-detail-page.slide-in {
+    transform: translateX(0);
+}
+
+/* 个人信息卡片样式 */
+.info-card {
+    background: #fff;
+    padding: 20px;
+    margin-bottom: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.avatar-large {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 12px;
+}
+
+.avatar-large img {
+    width: 100%;
+    height: 100%;
+    border-radius: 6px;
+    object-fit: cover;
+}
+
+.info-main .name {
+    font-size: 22px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.info-main .wxid {
+    font-size: 14px;
+    color: #888;
+}
+
+/* 详细信息列表样式 */
+.detail-list {
+    background: #fff;
+    margin-bottom: 8px;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    border-bottom: 0.5px solid rgba(0, 0, 0, 0.05);
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+}
+
+.detail-item .label {
+    width: 80px;
+    color: #333;
+    font-size: 16px;
+}
+
+.detail-item .value {
+    flex: 1;
+    color: #666;
+    font-size: 16px;
+}
+
+.icon-arrow {
+    width: 16px;
+    height: 16px;
+    background: url('path/to/arrow.png') no-repeat center;
+    background-size: contain;
+    opacity: 0.3;
+}
+
+/* 底部操作按钮样式 */
+.bottom-actions {
+    margin-top: auto;
+    padding: 16px;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom));
+    background: #f7f7f7;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 16px;
+    padding: 0 16px;
+}
+
+.action-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 0;
+    background: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.action-btn .icon-wrapper {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-message::before,
+.icon-video::before {
+    content: '';
+    display: block;
+    width: 24px;
+    height: 24px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.icon-message::before {
+    background-image: url('https://cdn-icons-png.flaticon.com/512/3193/3193015.png');
+    filter: invert(57%) sepia(75%) saturate(1304%) hue-rotate(93deg) brightness(95%) contrast(89%);
+}
+
+.icon-video::before {
+    content: '';
+    display: block;
+    width: 24px;
+    height: 24px;
+    background-image: url('https://cdn-icons-png.flaticon.com/512/9840/9840573.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    filter: invert(57%) sepia(75%) saturate(1304%) hue-rotate(93deg) brightness(95%) contrast(89%);
+}
+
+.action-btn span {
+    font-size: 15px;
+    color: #07c160;
+}
+
+/* 点击效果 */
+.action-btn:active {
+    background: rgba(0, 0, 0, 0.05);
+}
+ 

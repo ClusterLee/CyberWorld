@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>微信界面</title>
+    <!-- 引入Vue.js -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <!-- 引入样式文件 -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <div class="wechat-container">
+            <!-- 主页面 -->
+            <div class="page main-page" :class="{ 'slide-out': showChat }">
+                <!-- 顶部状态栏 -->
+                <div class="header">
+                    <div class="title">{{ getCurrentTabName }}</div>
+                    <div class="icons">
+                        <i class="icon-search"></i>
+                        <i class="icon-add"></i>
+                    </div>
+                </div>
+
+                <!-- 聊天列表页面 -->
+                <div v-if="currentTab === 'wechat'" class="chat-list">
+                    <div class="chat-item" 
+                        v-for="chat in chats" 
+                        :key="chat.id"
+                        @click="openChat(chat)"
+                    >
+                        <div class="avatar">
+                            <img :src="chat.avatar" alt="头像">
+                        </div>
+                        <div class="content">
+                            <div class="name">{{chat.name}}</div>
+                            <div class="message">{{chat.lastMessage}}</div>
+                        </div>
+                        <div class="time">{{chat.time}}</div>
+                    </div>
+                </div>
+
+                <!-- 通讯录页面 -->
+                <div v-if="currentTab === 'contacts'" class="contacts-page">
+                    <!-- 搜索框容器 -->
+                    <div class="search-container">
+                        <div class="search-box">
+                            <i class="icon-search"></i>
+                            <input type="text" placeholder="搜索">
+                        </div>
+                    </div>
+                    
+                    <div class="contact-list">
+                        <!-- 特殊联系人 -->
+                        <div class="special-contacts">
+                            <div class="contact-item">
+                                <div class="avatar">
+                                    <i class="icon-new-friend"></i>
+                                </div>
+                                <div class="name">新的朋友</div>
+                            </div>
+                            <div class="contact-item">
+                                <div class="avatar">
+                                    <i class="icon-group"></i>
+                                </div>
+                                <div class="name">群聊</div>
+                            </div>
+                            <div class="contact-item">
+                                <div class="avatar">
+                                    <i class="icon-tag"></i>
+                                </div>
+                                <div class="name">标签</div>
+                            </div>
+                            <div class="contact-item">
+                                <div class="avatar">
+                                    <i class="icon-official"></i>
+                                </div>
+                                <div class="name">公众号</div>
+                            </div>
+                        </div>
+
+                        <!-- 联系人列表 -->
+                        <div class="contact-section" 
+                            v-for="section in contactSections" 
+                            :key="section.letter"
+                        >
+                            <div class="section-title">{{section.letter}}</div>
+                            <div class="contact-item" 
+                                v-for="contact in section.contacts" 
+                                :key="contact.id"
+                                @click="openContactDetail(contact)"
+                            >
+                                <div class="avatar">
+                                    <img :src="contact.avatar" alt="头像">
+                                </div>
+                                <div class="name">{{contact.name}}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 字母索引 -->
+                    <div class="letter-index">
+                        <span v-for="letter in letters" 
+                            :key="letter"
+                            @click="scrollToLetter(letter)"
+                        >{{letter}}</span>
+                    </div>
+                </div>
+
+                <!-- 发现页面 -->
+                <div v-if="currentTab === 'discover'" class="discover-page">
+                    <div class="discover-list">
+                        <div class="discover-section">
+                            <div class="discover-item">
+                                <i class="icon-moments"></i>
+                                <span>朋友圈</span>
+                                <i class="icon-arrow"></i>
+                            </div>
+                        </div>
+                        <div class="discover-section">
+                            <div class="discover-item">
+                                <i class="icon-channels"></i>
+                                <span>视频号</span>
+                                <i class="icon-arrow"></i>
+                            </div>
+                        </div>
+                        <div class="discover-section">
+                            <div class="discover-item">
+                                <i class="icon-scan"></i>
+                                <span>扫一扫</span>
+                                <i class="icon-arrow"></i>
+                            </div>
+                            <div class="discover-item">
+                                <i class="icon-shake"></i>
+                                <span>摇一摇</span>
+                                <i class="icon-arrow"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 我的页面 -->
+                <div v-if="currentTab === 'me'" class="me-page">
+                    <div class="user-info">
+                        <div class="avatar">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=User" alt="头像">
+                        </div>
+                        <div class="info">
+                            <div class="name">用户名</div>
+                            <div class="wxid">微信号：wxid_xxx</div>
+                        </div>
+                        <div class="qr-code">
+                            <i class="icon-qr"></i>
+                        </div>
+                        <i class="icon-arrow"></i>
+                    </div>
+                    <div class="me-section">
+                        <div class="me-item">
+                            <i class="icon-pay"></i>
+                            <span>支付</span>
+                            <i class="icon-arrow"></i>
+                        </div>
+                    </div>
+                    <div class="me-section">
+                        <div class="me-item">
+                            <i class="icon-favorites"></i>
+                            <span>收藏</span>
+                            <i class="icon-arrow"></i>
+                        </div>
+                        <div class="me-item">
+                            <i class="icon-albums"></i>
+                            <span>相册</span>
+                            <i class="icon-arrow"></i>
+                        </div>
+                        <div class="me-item">
+                            <i class="icon-cards"></i>
+                            <span>卡包</span>
+                            <i class="icon-arrow"></i>
+                        </div>
+                        <div class="me-item">
+                            <i class="icon-sticker"></i>
+                            <span>表情</span>
+                            <i class="icon-arrow"></i>
+                        </div>
+                    </div>
+                    <div class="me-section">
+                        <div class="me-item">
+                            <i class="icon-settings"></i>
+                            <span>设置</span>
+                            <i class="icon-arrow"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 底部导航栏 -->
+                <div class="tab-bar">
+                    <div 
+                        v-for="tab in tabs" 
+                        :key="tab.id"
+                        class="tab-item"
+                        :class="{ active: currentTab === tab.id }"
+                        @click="switchTab(tab.id)"
+                    >
+                        <i :class="tab.icon"></i>
+                        <span>{{ tab.name }}</span>
+                        <span v-if="tab.unread" class="badge">{{ tab.unread }}</span>
+                        <span v-if="tab.hasNew" class="dot"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 聊天详情页面 -->
+            <div class="page chat-page" :class="{ 'slide-in': showChat }">
+                <div class="header">
+                    <div class="back-button" @click="closeChat">
+                        <!-- 移除图标字体，使用 CSS 绘制的箭头 -->
+                    </div>
+                    <div class="title">{{ currentChat?.name }}</div>
+                    <div class="icons">
+                        <i class="icon-more"></i>
+                    </div>
+                </div>
+                <div class="chat-content">
+                    <div class="chat-messages" v-if="messages.length">
+                        <div 
+                            v-for="msg in messages" 
+                            :key="msg.id"
+                            class="message-item"
+                            :class="{ 'self': msg.isSelf }"
+                        >
+                            <img 
+                                v-if="msg.type === 'image'" 
+                                :src="msg.content" 
+                                class="message-image"
+                                @click="previewImage(msg.content)"
+                            >
+                            <span v-else>{{ msg.content }}</span>
+                        </div>
+                    </div>
+                    <div v-else class="message-hint">暂无聊天记录</div>
+                </div>
+
+                <!-- 修改聊天输入框区域 -->
+                <div class="chat-input-area">
+                    <div class="input-toolbar">
+                        <i class="icon-voice"></i>
+                    </div>
+                    <div class="input-box">
+                        <input 
+                            type="text" 
+                            v-model="messageText" 
+                            placeholder="输入消息..."
+                            @keyup.enter="sendMessage"
+                        >
+                        <div class="image-preview-container" v-if="selectedImages.length">
+                            <div class="image-preview" v-for="(image, index) in selectedImages" :key="index">
+                                <img :src="image" alt="预览图片">
+                                <span class="icon-close" @click="cancelImage(index)"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <label class="upload-btn">
+                        <img src="https://cdn-icons-png.flaticon.com/512/2983/2983788.png" alt="图片" class="icon-image">
+                        <input 
+                            type="file" 
+                            accept="image/*" 
+                            @change="handleImageSelect" 
+                            multiple
+                            style="display: none;"
+                        >
+                    </label>
+                    <button 
+                        class="send-btn"
+                        :class="{ active: messageText.trim() || selectedImages.length }"
+                        @click="sendMessage"
+                    >发送</button>
+                </div>
+            </div>
+
+            <!-- 联系人详情页面 -->
+            <div class="page contact-detail-page" :class="{ 'slide-in': showContactDetail }">
+                <!-- 顶部导航栏 -->
+                <div class="header">
+                    <div class="back-button" @click="closeContactDetail">
+                        <span class="back-arrow"></span>
+                    </div>
+                    <div class="title">详细资料</div>
+                </div>
+                
+                <!-- 个人信息卡片 -->
+                <div class="contact-detail-content">
+                    <div class="info-card">
+                        <div class="avatar-large">
+                            <img :src="currentContact?.avatar" alt="头像">
+                        </div>
+                        <div class="info-main">
+                            <div class="name">{{ currentContact?.name }}</div>
+                            <div class="wxid">微信号：{{ currentContact?.wxid || 'wxid_' + currentContact?.name }}</div>
+                        </div>
+                    </div>
+
+                    <!-- 详细信息列表 -->
+                    <div class="detail-list">
+                        <div class="detail-item">
+                            <span class="label">备注</span>
+                            <span class="value">{{ currentContact?.remark || '设置备注' }}</span>
+                            <i class="icon-arrow"></i>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">地区</span>
+                            <span class="value">{{ currentContact?.region || '未设置' }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 底部操作按钮 -->
+                <div class="bottom-actions">
+                    <div class="action-buttons">
+                        <div class="action-btn" @click="startChat(currentContact)">
+                            <div class="icon-wrapper">
+                                <i class="icon-message"></i>
+                            </div>
+                            <span>发消息</span>
+                        </div>
+                        <div class="action-btn">
+                            <div class="icon-wrapper">
+                                <i class="icon-video"></i>
+                            </div>
+                            <span>视频通话</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入图标字体（这里使用示例链接，需要替换成实际的图标库） -->
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_8d5l8fzk5b87iudi.css">
+    
+    <!-- Vue实例配置 -->
+    <script>
+        const { createApp } = Vue;
+
+        const app = createApp({
+            data() {
+                return {
+                    currentTab: 'wechat',
+                    tabs: [
+                        { id: 'wechat', name: '微信', icon: 'icon-chat' },
+                        { id: 'contacts', name: '通讯录', icon: 'icon-contacts' },
+                        { id: 'discover', name: '发现', icon: 'icon-discover' },
+                        { id: 'me', name: '我', icon: 'icon-me' }
+                    ],
+                    messageText: '',
+                    selectedImages: [],
+                    imageFiles: [],
+                    chats: [
+                        {
+                            id: 1,
+                            name: '张三',
+                            avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix',
+                            lastMessage: '你好啊！',
+                            time: '下午 3:30'
+                        },
+                        {
+                            id: 2,
+                            name: '李四',
+                            avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka',
+                            lastMessage: '明天见！',
+                            time: '上午 11:20'
+                        }
+                    ],
+                    showChat: false,
+                    currentChat: null,
+                    messages: [],
+                    contactSections: [
+                        {
+                            letter: 'A',
+                            contacts: [
+                                { id: 1, name: '阿明', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Ming' },
+                                { id: 2, name: '阿华', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Hua' }
+                            ]
+                        },
+                        {
+                            letter: 'B',
+                            contacts: [
+                                { id: 3, name: '白云', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Cloud' },
+                                { id: 4, name: '包子', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Bun' }
+                            ]
+                        }
+                        // ... 更多联系人分组
+                    ],
+                    letters: ['↑', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '#'],
+                    showContactDetail: false,
+                    currentContact: null,
+                }
+            },
+            methods: {
+                switchTab(tabId) {
+                    this.currentTab = tabId;
+                },
+                openChat(chat) {
+                    this.currentChat = chat;
+                    this.showChat = true;
+                },
+                closeChat() {
+                    this.showChat = false;
+                    setTimeout(() => {
+                        this.currentChat = null;
+                    }, 300); // 等待动画结束后清空当前聊天
+                },
+                handleImageSelect(event) {
+                    const files = Array.from(event.target.files);
+                    files.forEach(file => {
+                        if (file) {
+                            this.imageFiles.push(file);
+                            const reader = new FileReader();
+                            reader.onload = (e) => {
+                                this.selectedImages.push(e.target.result);
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    });
+                    event.target.value = '';
+                },
+                cancelImage(index) {
+                    this.selectedImages.splice(index, 1);
+                    this.imageFiles.splice(index, 1);
+                },
+                sendMessage() {
+                    if (this.messageText.trim() || this.selectedImages.length) {
+                        if (this.messageText.trim()) {
+                            this.messages.push({
+                                id: Date.now(),
+                                type: 'text',
+                                content: this.messageText,
+                                isSelf: true,
+                                time: new Date().toLocaleTimeString()
+                            });
+                        }
+                        
+                        this.selectedImages.forEach((image, index) => {
+                            this.messages.push({
+                                id: Date.now() + index + 1,
+                                type: 'image',
+                                content: image,
+                                isSelf: true,
+                                time: new Date().toLocaleTimeString()
+                            });
+                        });
+                        
+                        this.messageText = '';
+                        this.selectedImages = [];
+                        this.imageFiles = [];
+                        
+                        this.$nextTick(() => {
+                            const chatContent = document.querySelector('.chat-content');
+                            if (chatContent) {
+                                chatContent.scrollTop = chatContent.scrollHeight;
+                            }
+                        });
+                    }
+                },
+                openContactDetail(contact) {
+                    this.currentContact = contact;
+                    this.showContactDetail = true;
+                },
+                closeContactDetail() {
+                    this.showContactDetail = false;
+                    setTimeout(() => {
+                        this.currentContact = null;
+                    }, 300);
+                },
+                startChat(contact) {
+                    this.closeContactDetail();
+                    let chat = this.chats.find(c => c.id === contact.id);
+                    if (!chat) {
+                        chat = {
+                            id: contact.id,
+                            name: contact.name,
+                            avatar: contact.avatar,
+                            lastMessage: '',
+                            time: new Date().toLocaleTimeString()
+                        };
+                        this.chats.unshift(chat);
+                    }
+                    this.openChat(chat);
+                }
+            },
+            computed: {
+                getCurrentTabName() {
+                    const currentTab = this.tabs.find(tab => tab.id === this.currentTab);
+                    return currentTab ? currentTab.name : '微信';
+                }
+            }
+        });
+
+        app.mount('#app');
+    </script>
+</body>
+</html> 
