@@ -55,26 +55,26 @@
                         <!-- 特殊联系人 -->
                         <div class="special-contacts">
                             <div class="contact-item">
-                                <div class="avatar">
-                                    <i class="icon-new-friend"></i>
+                                <div class="avatar special-avatar green-bg">
+                                    <img src="https://api.iconify.design/material-symbols:person-add.svg?color=white&width=15" alt="新的朋友" class="icon-new-friend">
                                 </div>
                                 <div class="name">新的朋友</div>
                             </div>
                             <div class="contact-item">
-                                <div class="avatar">
-                                    <i class="icon-group"></i>
+                                <div class="avatar special-avatar green-bg">
+                                    <img src="https://api.iconify.design/material-symbols:group.svg?color=white&width=18" alt="群聊" class="icon-group">
                                 </div>
                                 <div class="name">群聊</div>
                             </div>
                             <div class="contact-item">
-                                <div class="avatar">
-                                    <i class="icon-tag"></i>
+                                <div class="avatar special-avatar green-bg">
+                                    <img src="https://api.iconify.design/material-symbols:sell.svg?color=white&width=14" alt="标签" class="icon-tag">
                                 </div>
                                 <div class="name">标签</div>
                             </div>
                             <div class="contact-item">
-                                <div class="avatar">
-                                    <i class="icon-official"></i>
+                                <div class="avatar special-avatar green-bg">
+                                    <img src="https://api.iconify.design/material-symbols:chrome-reader-mode.svg?color=white&width=16" alt="公众号" class="icon-official">
                                 </div>
                                 <div class="name">公众号</div>
                             </div>
@@ -250,7 +250,7 @@
                         <input 
                             type="text" 
                             v-model="messageText" 
-                            placeholder="输入消息..."
+                            placeholder="输入消..."
                             @keyup.enter="sendMessage"
                         >
                         <div class="image-preview-container" v-if="selectedImages.length">
@@ -367,7 +367,7 @@
                             id: 2,
                             name: '李四',
                             avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka',
-                            lastMessage: '明天见！',
+                            lastMessage: '明天！',
                             time: '上午 11:20'
                         }
                     ],
