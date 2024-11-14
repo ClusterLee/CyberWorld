@@ -304,7 +304,7 @@
                         <input 
                             type="text" 
                             v-model="messageText" 
-                            placeholder="输入消..."
+                            placeholder="输���消..."
                             @keyup.enter="sendMessage"
                         >
                         <div class="image-preview-container" v-if="selectedImages.length">
@@ -834,7 +834,7 @@
                     moments: [
                         {
                             id: 1,
-                            name: "Alice",
+                            name: "张三",
                             avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alice",
                             text: "今天天气真好 ☀️",
                             images: [
@@ -846,7 +846,7 @@
                         },
                         {
                             id: 2,
-                            name: "Bob",
+                            name: "李四",
                             avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Bob",
                             text: "分享一个有趣的项目 🚀",
                             images: [
@@ -854,7 +854,91 @@
                             ],
                             time: "10分钟前"
                         },
-                        // 可以添加更多朋友圈数据...
+                        {
+                            id: 3,
+                            name: "小明",
+                            avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Charlie",
+                            text: "周末去爬山，风景真美 🏔️",
+                            images: [
+                                "https://picsum.photos/300/300?random=5",
+                                "https://picsum.photos/300/300?random=6",
+                                "https://picsum.photos/300/300?random=7",
+                                "https://picsum.photos/300/300?random=8"
+                            ],
+                            time: "1小时前"
+                        },
+                        {
+                            id: 4,
+                            name: "小红",
+                            avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=David",
+                            text: "新买的相机，随手拍几张 📸",
+                            images: [
+                                "https://picsum.photos/300/300?random=9",
+                                "https://picsum.photos/300/300?random=10"
+                            ],
+                            time: "2小时前"
+                        },
+                        {
+                            id: 5,
+                            name: "王五",
+                            avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Eva",
+                            text: "美食分享 🍜",
+                            images: [
+                                "https://picsum.photos/300/300?random=11",
+                                "https://picsum.photos/300/300?random=12",
+                                "https://picsum.photos/300/300?random=13",
+                                "https://picsum.photos/300/300?random=14",
+                                "https://picsum.photos/300/300?random=15"
+                            ],
+                            time: "3小时前"
+                        },
+                        {
+                            id: 6,
+                            name: "小李",
+                            avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Frank",
+                            text: "工作日常 💼",
+                            time: "4小时前"
+                        },
+                        {
+                            id: 7,
+                            name: "小张",
+                            avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=George",
+                            text: "新到的咖啡豆，香气四溢 ☕️",
+                            images: [
+                                "https://picsum.photos/300/300?random=16"
+                            ],
+                            time: "5小时前"
+                        },
+                        {
+                            id: 8,
+                            name: "小王",
+                            avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Henry",
+                            text: "读书打卡第100天 📚",
+                            time: "6小时前"
+                        },
+                        {
+                            id: 9,
+                            name: "小陈",
+                            avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Ivy",
+                            text: "看展览的一天 🎨",
+                            images: [
+                                "https://picsum.photos/300/300?random=17",
+                                "https://picsum.photos/300/300?random=18",
+                                "https://picsum.photos/300/300?random=19"
+                            ],
+                            time: "8小时前"
+                        },
+                        {
+                            id: 10,
+                            name: "小林",
+                            avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jack",
+                            text: "新学期开始了 📝",
+                            images: [
+                                "https://picsum.photos/300/300?random=20",
+                                "https://picsum.photos/300/300?random=21"
+                            ],
+                            time: "10小时前"
+                        }
                     ]
                 }
             },
@@ -1030,23 +1114,10 @@
                 openMoments() {
                     this.showMoments = true;
                     this.showChat = false;
-                    
-                    // 添加滚动监听
-                    this.$nextTick(() => {
-                        const content = document.querySelector('.moments-content');
-                        content.addEventListener('scroll', this.handleMomentsScroll);
-                    });
                 },
                 
                 closeMoments() {
                     this.showMoments = false;
-                    // 移除滚动监听
-                    const content = document.querySelector('.moments-content');
-                    content.removeEventListener('scroll', this.handleMomentsScroll);
-                },
-                
-                handleMomentsScroll(event) {
-                    this.isNavScrolled = event.target.scrollTop > 50;
                 },
                 
                 openCamera() {
