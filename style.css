@@ -1420,11 +1420,45 @@ body {
     padding: 0 2px;
 }
 
-/* 调整头像容器为相对定位 */
+/* 调整头像容���为相对定位 */
 .chat-item .avatar {
     position: relative;
     width: 48px;
     height: 48px;
     margin-right: 10px;
+}
+
+/* 搜索结果容器 */
+.search-results {
+    background: #fff;
+    padding: 0 12px;
+}
+
+/* 搜索框样式优化 */
+.search-box input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 14px;
+    color: #333;
+    height: 36px;
+    width: 100%;
+}
+
+.search-box input::placeholder {
+    color: #999;
+}
+
+/* 搜索结果中的联系人项样式 */
+.search-results .contact-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.search-results .contact-item:last-child {
+    border-bottom: none;
 }
  

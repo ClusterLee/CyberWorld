@@ -53,11 +53,31 @@
                     <div class="search-container">
                         <div class="search-box">
                             <i class="icon-search"></i>
-                            <input type="text" placeholder="搜索">
+                            <input 
+                                type="text" 
+                                v-model="searchText" 
+                                placeholder="搜索"
+                                @input="handleSearch"
+                            >
                         </div>
                     </div>
                     
-                    <div class="contact-list">
+                    <!-- 添加搜索结果显示区域 -->
+                    <div class="search-results" v-if="searchText && searchResults.length">
+                        <div class="contact-item" 
+                            v-for="contact in searchResults" 
+                            :key="contact.id"
+                            @click="openContactDetail(contact)"
+                        >
+                            <div class="avatar">
+                                <img :src="contact.avatar" alt="头像">
+                            </div>
+                            <div class="name">{{contact.name}}</div>
+                        </div>
+                    </div>
+
+                    <!-- 原联系人列表，当没有搜索文本时显示 -->
+                    <div class="contact-list" v-show="!searchText">
                         <!-- 特殊联系人 -->
                         <div class="special-contacts">
                             <div class="contact-item">
@@ -724,7 +744,9 @@
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    searchText: '', // 搜索文本
+                    searchResults: [], // 搜索结果
                 }
             },
             methods: {
@@ -884,6 +906,17 @@
                             chat.unread = (chat.unread || 0) + 1;
                         }
                     }
+                },
+                // 处理搜索
+                handleSearch() {
+                    if (!this.searchText) {
+                        this.searchResults = [];
+                        return;
+                    }
+                    
+                    this.searchResults = this.contactSections.reduce((results, section) => {
+                        return results.concat(section.contacts.filter(contact => contact.name.toLowerCase().includes(this.searchText.toLowerCase())));
+                    }, []);
                 }
             },
             computed: {
