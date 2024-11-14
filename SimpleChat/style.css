@@ -1438,7 +1438,7 @@ body {
     transform: rotate(45deg);
 }
 
-/* 朋友圈页面样式 */
+/* 朋友圈页样式 */
 .moments-page {
     position: fixed;
     top: 0;
@@ -1635,5 +1635,73 @@ body {
     font-size: 17px;
     font-weight: 500;
     pointer-events: none;  /* 防止标题影响点击事件 */
+}
+
+/* 图片预览样式 */
+.image-preview-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.preview-close {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 30px;
+    height: 30px;
+    color: #fff;
+    font-size: 30px;
+    line-height: 30px;
+    text-align: center;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.preview-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.preview-image {
+    /* 移除最大尺寸限制，使用原始尺寸 */
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+}
+
+/* 如果图片实在太大超出屏幕，才限制最大尺寸 */
+@media screen and (max-width: 768px) {
+    .preview-image {
+        max-width: 100vw;
+        max-height: 100vh;
+    }
+}
+
+.preview-indicator {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-size: 14px;
+    padding: 5px 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 15px;
 }
  

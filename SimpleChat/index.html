@@ -443,6 +443,19 @@
                     </div>
                 </div>
             </div>
+
+            <!-- 简化的图片预览组件 -->
+            <div class="image-preview-overlay" v-if="previewImages.length">
+                <div class="preview-close" @click="closePreview">×</div>
+                
+                <div class="preview-container">
+                    <img :src="previewImages[currentPreviewIndex]" 
+                         class="preview-image"
+                         @click="nextImage">
+                </div>
+                
+                <div class="preview-indicator">{{ currentPreviewIndex + 1 }}/{{ previewImages.length }}</div>
+            </div>
         </div>
     </div>
 
@@ -533,7 +546,7 @@
                                 {
                                     id: 1,
                                     type: 'text',
-                                    content: '下午有个会议需要讨论',
+                                    content: '下有个会议需要讨论',
                                     isSelf: false,
                                     time: '10:25'
                                 },
@@ -941,6 +954,8 @@
                         }
                     ],
                     scrollTop: 0,  // 添加滚动位置记录
+                    previewImages: [], // 预览图片数组
+                    currentPreviewIndex: 0, // 当前预览的图片索引
                 }
             },
             methods: {
@@ -1009,7 +1024,7 @@
                                 time: new Date().toLocaleTimeString()
                             };
                             this.currentChat.messages.push(textMessage);
-                            // 更新最后一条息
+                            // 更新最后一息
                             this.currentChat.lastMessage = this.messageText;
                             this.currentChat.time = new Date().toLocaleTimeString();
                         }
@@ -1124,15 +1139,33 @@
                 
                 openCamera() {
                     // 实现拍照功能
-                    console.log('打开相机');
+                    console.log('打开机');
                 },
                 
-                previewImage(images, index) {
-                    // 实现图片预览功能
-                    console.log('预览图片', images[index]);
+                previewImage(images, index = 0) {
+                    // 如果传入的是单张图片，将其转换为数组
+                    this.previewImages = Array.isArray(images) ? images : [images];
+                    this.currentPreviewIndex = index;
+                    
+                    // 禁止背景滚动
+                    document.body.style.overflow = 'hidden';
+                },
+                closePreview() {
+                    this.previewImages = [];
+                    this.currentPreviewIndex = 0;
+                    
+                    // 恢复背景滚动
+                    document.body.style.overflow = 'auto';
                 },
                 testClick() {
                     console.log('点击了朋友圈');
+                },
+                nextImage() {
+                    if (this.currentPreviewIndex < this.previewImages.length - 1) {
+                        this.currentPreviewIndex++;
+                    } else {
+                        this.currentPreviewIndex = 0; // 循环到第一张
+                    }
                 }
             },
             computed: {
