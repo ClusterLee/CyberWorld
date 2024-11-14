@@ -835,7 +835,7 @@ body {
     font-size: 14px;
 }
 
-/* ���的页面样式 */
+/* 的页面样式 */
 .me-page {
     flex: 1;
     background: rgba(247, 247, 247, 0.5);
@@ -950,91 +950,13 @@ body {
     opacity: 0.9;
 }
 
-/* 添加图片预览区域样式 */
+/* 图片预览区域样式 - 合并后的版本 */
 .image-preview {
     position: relative;
     padding: 8px;
     background: rgba(0, 0, 0, 0.03);
     border-radius: 4px;
     margin: 8px;
-    display: inline-block;
-}
-
-.image-preview img {
-    max-height: 100px;
-    max-width: 150px;
-    border-radius: 4px;
-    object-fit: contain;
-}
-
-.image-preview .icon-close {
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    background: rgba(0, 0, 0, 0.6);
-    color: white;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-/* 添加关闭图标的样式 */
-.image-preview .icon-close::before,
-.image-preview .icon-close::after {
-    content: '';
-    position: absolute;
-    width: 12px;
-    height: 2px;
-    background: white;
-    border-radius: 1px;
-}
-
-.image-preview .icon-close::before {
-    transform: rotate(45deg);
-}
-
-.image-preview .icon-close::after {
-    transform: rotate(-45deg);
-}
-
-/* 优化悬停效果 */
-.image-preview .icon-close:hover {
-    background: rgba(0, 0, 0, 0.8);
-    transform: scale(1.1);
-}
-
-.image-preview .icon-close:active {
-    transform: scale(0.95);
-}
-
-/* 修改输入框区域样式以适应图片预览 */
-.input-box {
-    display: flex;
-    flex-direction: column;
-}
-
-.input-box input {
-    min-height: 24px;
-}
-
-/* 添加多图片预览区域样式 */
-.image-preview-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    padding: 8px;
-    background: rgba(0, 0, 0, 0.03);
-    border-radius: 4px;
-    margin: 8px;
-}
-
-.image-preview {
-    position: relative;
     display: inline-block;
 }
 
@@ -1046,6 +968,7 @@ body {
     border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
+/* 关闭图标样式 - 合并后的版本 */
 .image-preview .icon-close {
     position: absolute;
     top: -8px;
@@ -1087,6 +1010,40 @@ body {
 
 .image-preview .icon-close:active {
     transform: scale(0.95);
+}
+
+/* 头像样式 - 合并后的版本 */
+.contact-item .avatar {
+    width: 40px;
+    height: 40px;
+    margin-right: 12px;
+}
+
+.contact-item .avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 4px;
+}
+
+/* 多图片预览区域样式 */
+.image-preview-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px;
+    background: rgba(0, 0, 0, 0.03);
+    border-radius: 4px;
+    margin: 8px;
+}
+
+/* 输入框区域样式 */
+.input-box {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-box input {
+    min-height: 24px;
 }
 
 /* 联系人详情页面样式优化 */
