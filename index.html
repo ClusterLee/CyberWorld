@@ -140,28 +140,53 @@
                 <!-- 发现页面 -->
                 <div v-if="currentTab === 'discover'" class="discover-page">
                     <div class="discover-list">
+                        <!-- 朋友圈和视频号 -->
                         <div class="discover-section">
                             <div class="discover-item">
-                                <i class="icon-moments"></i>
+                                <img src="https://api.iconify.design/material-symbols:camera.svg?color=%23FF9C0B" alt="朋友圈" class="discover-icon">
                                 <span>朋友圈</span>
                                 <i class="icon-arrow"></i>
                             </div>
-                        </div>
-                        <div class="discover-section">
                             <div class="discover-item">
-                                <i class="icon-channels"></i>
+                                <img src="https://api.iconify.design/material-symbols:play-circle.svg?color=%23FA9D3B" alt="视频号" class="discover-icon">
                                 <span>视频号</span>
                                 <i class="icon-arrow"></i>
                             </div>
                         </div>
+
+                        <!-- AI创作能力入口 -->
                         <div class="discover-section">
                             <div class="discover-item">
-                                <i class="icon-scan"></i>
+                                <img src="https://api.iconify.design/material-symbols:brush.svg?color=%23FF6B6B" alt="画一画" class="discover-icon">
+                                <span>画一画</span>
+                                <i class="icon-arrow"></i>
+                            </div>
+                            <div class="discover-item">
+                                <img src="https://api.iconify.design/material-symbols:edit-note.svg?color=%234A90E2" alt="写一写" class="discover-icon">
+                                <span>写一写</span>
+                                <i class="icon-arrow"></i>
+                            </div>
+                            <div class="discover-item">
+                                <img src="https://api.iconify.design/material-symbols:music-note.svg?color=%23FFB900" alt="唱一唱" class="discover-icon">
+                                <span>唱一唱</span>
+                                <i class="icon-arrow"></i>
+                            </div>
+                            <div class="discover-item">
+                                <img src="https://api.iconify.design/material-symbols:fiber-smart-record.svg?color=%23B066FF" alt="录一录" class="discover-icon">
+                                <span>录一录</span>
+                                <i class="icon-arrow"></i>
+                            </div>
+                        </div>
+
+                        <!-- 扫一扫和摇一摇部分 -->
+                        <div class="discover-section">
+                            <div class="discover-item">
+                                <img src="https://api.iconify.design/material-symbols:qr-code-scanner.svg?color=%2307C160" alt="扫一扫" class="discover-icon">
                                 <span>扫一扫</span>
                                 <i class="icon-arrow"></i>
                             </div>
                             <div class="discover-item">
-                                <i class="icon-shake"></i>
+                                <img src="https://api.iconify.design/material-symbols:vibration.svg?color=%2307C160" alt="摇一摇" class="discover-icon">
                                 <span>摇一摇</span>
                                 <i class="icon-arrow"></i>
                             </div>
@@ -425,7 +450,7 @@
                             id: 3,
                             name: '产品开发群',
                             avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=产品开发群',
-                            lastMessage: 'Alice: 新功能已经上线了，大家可以测试一下',
+                            lastMessage: 'Alice: 新功能已经上线了，大家可以测一下',
                             time: '10:45',
                             unread: 12,
                             isGroup: true,
@@ -493,7 +518,7 @@
                                 {
                                     id: 1,
                                     type: 'text',
-                                    content: '服务器状态已恢复正常',
+                                    content: '服务状态已恢复常',
                                     isSelf: false,
                                     time: '09:00',
                                     sender: 'Tom'
@@ -815,7 +840,7 @@
                                 time: new Date().toLocaleTimeString()
                             };
                             this.currentChat.messages.push(textMessage);
-                            // 更新最后一条消息
+                            // 更新最后一条���息
                             this.currentChat.lastMessage = this.messageText;
                             this.currentChat.time = new Date().toLocaleTimeString();
                         }
