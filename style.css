@@ -28,6 +28,7 @@
 
 .header {
     height: 44px;
+    min-height: 44px;
     background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -39,20 +40,25 @@
     top: 0;
     z-index: 100;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
 }
 
 .title {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
     font-size: 17px;
     font-weight: 500;
+    color: #000;
+    text-align: center;
+    flex: 1;
+    margin: 0 48px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .icons {
-    margin-left: auto;
     display: flex;
     gap: 15px;
+    flex-shrink: 0;
 }
 
 .chat-list {
@@ -533,13 +539,11 @@ body {
 /* 搜索框容器 */
 .search-container {
     position: sticky;
-    top: 0;
-    z-index: 10;
+    top: 44px;
+    z-index: 99;
     padding: 8px 12px;
     background: #f7f7f7;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
 }
 
 /* 搜索框样式优化 */
