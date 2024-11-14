@@ -142,7 +142,7 @@
                     <div class="discover-list">
                         <!-- 朋友圈和视频号 -->
                         <div class="discover-section">
-                            <div class="discover-item">
+                            <div class="discover-item" @click="openMoments">
                                 <img src="https://api.iconify.design/material-symbols:camera.svg?color=%23FF9C0B" alt="朋友圈" class="discover-icon">
                                 <span>朋友圈</span>
                                 <i class="icon-arrow"></i>
@@ -382,6 +382,63 @@
                                 <i class="icon-video"></i>
                             </div>
                             <span>视频通话</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 朋友圈页面 -->
+            <div class="page moments-page" :class="{ 'slide-in': showMoments }">
+                <!-- 导航栏 -->
+                <div class="moments-nav" :class="{ 'scrolled': isNavScrolled }">
+                    <div class="back-button" @click="closeMoments">
+                        <i class="icon-back"></i>
+                    </div>
+                    <div class="title">朋友圈</div>
+                    <img src="https://api.iconify.design/material-symbols:photo-camera-outline.svg" 
+                         class="icon-camera" 
+                         @click="openCamera">
+                </div>
+
+                <!-- 朋友圈内容区域 -->
+                <div class="moments-content" @scroll="handleMomentsScroll">
+                    <!-- 顶部背景区域 -->
+                    <div class="moments-header">
+                        <img class="moments-bg" src="https://picsum.photos/800/600" alt="朋友圈背景">
+                        <div class="user-info-moments">
+                            <div class="user-name-moments">我的名字</div>
+                            <img class="user-avatar-moments" 
+                                 src="https://api.dicebear.com/7.x/avataaars/svg?seed=User" 
+                                 alt="头像">
+                        </div>
+                    </div>
+
+                    <!-- 朋友圈列表 -->
+                    <div class="moments-list">
+                        <div v-for="moment in moments" 
+                             :key="moment.id" 
+                             class="moment-item">
+                            <div class="moment-header">
+                                <img :src="moment.avatar" :alt="moment.name" class="moment-avatar">
+                                <div class="moment-info">
+                                    <div class="moment-name">{{ moment.name }}</div>
+                                    <div class="moment-text">{{ moment.text }}</div>
+                                    <div class="moment-images" v-if="moment.images && moment.images.length">
+                                        <img v-for="(image, index) in moment.images" 
+                                             :key="index"
+                                             :src="image"
+                                             class="moment-image"
+                                             @click="previewImage(moment.images, index)">
+                                    </div>
+                                    <div class="moment-footer">
+                                        <span class="moment-time">{{ moment.time }}</span>
+                                        <div class="moment-actions">
+                                            <span class="moment-action">赞</span>
+                                            <span class="moment-action">评论</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -772,6 +829,33 @@
                     ],
                     searchText: '', // 搜索文本
                     searchResults: [], // 搜索结果
+                    showMoments: false,
+                    isNavScrolled: false,
+                    moments: [
+                        {
+                            id: 1,
+                            name: "Alice",
+                            avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alice",
+                            text: "今天天气真好 ☀️",
+                            images: [
+                                "https://picsum.photos/300/300?random=1",
+                                "https://picsum.photos/300/300?random=2",
+                                "https://picsum.photos/300/300?random=3"
+                            ],
+                            time: "5分钟前"
+                        },
+                        {
+                            id: 2,
+                            name: "Bob",
+                            avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Bob",
+                            text: "分享一个有趣的项目 🚀",
+                            images: [
+                                "https://picsum.photos/300/300?random=4"
+                            ],
+                            time: "10分钟前"
+                        },
+                        // 可以添加更多朋友圈数据...
+                    ]
                 }
             },
             methods: {
@@ -840,7 +924,7 @@
                                 time: new Date().toLocaleTimeString()
                             };
                             this.currentChat.messages.push(textMessage);
-                            // 更新最后一条���息
+                            // 更新最后一条息
                             this.currentChat.lastMessage = this.messageText;
                             this.currentChat.time = new Date().toLocaleTimeString();
                         }
@@ -942,6 +1026,40 @@
                     this.searchResults = this.contactSections.reduce((results, section) => {
                         return results.concat(section.contacts.filter(contact => contact.name.toLowerCase().includes(this.searchText.toLowerCase())));
                     }, []);
+                },
+                openMoments() {
+                    this.showMoments = true;
+                    this.showChat = false;
+                    
+                    // 添加滚动监听
+                    this.$nextTick(() => {
+                        const content = document.querySelector('.moments-content');
+                        content.addEventListener('scroll', this.handleMomentsScroll);
+                    });
+                },
+                
+                closeMoments() {
+                    this.showMoments = false;
+                    // 移除滚动监听
+                    const content = document.querySelector('.moments-content');
+                    content.removeEventListener('scroll', this.handleMomentsScroll);
+                },
+                
+                handleMomentsScroll(event) {
+                    this.isNavScrolled = event.target.scrollTop > 50;
+                },
+                
+                openCamera() {
+                    // 实现拍照功能
+                    console.log('打开相机');
+                },
+                
+                previewImage(images, index) {
+                    // 实现图片预览功能
+                    console.log('预览图片', images[index]);
+                },
+                testClick() {
+                    console.log('点击了朋友圈');
                 }
             },
             computed: {

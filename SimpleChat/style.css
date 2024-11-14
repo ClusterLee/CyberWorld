@@ -1437,4 +1437,198 @@ body {
     border-right: 2px solid #c7c7cc;
     transform: rotate(45deg);
 }
+
+/* 朋友圈页面样式 */
+.moments-page {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #fff;
+    z-index: 1000;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    visibility: hidden;
+}
+
+.moments-page.slide-in {
+    transform: translateX(0);
+    visibility: visible;
+}
+
+/* 朋友圈顶部背景区域 */
+.moments-header {
+    position: relative;
+    height: 375px;
+    background: #000;
+    overflow: hidden;
+}
+
+.moments-bg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.8;
+}
+
+.user-info-moments {
+    position: absolute;
+    bottom: 20px;
+    right: 15px;
+    display: flex;
+    align-items: center;
+    color: #fff;
+    z-index: 2;
+}
+
+.user-name-moments {
+    font-size: 18px;
+    margin-right: 10px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.user-avatar-moments {
+    width: 70px;
+    height: 70px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+}
+
+/* 添加渐变遮罩，使底部文字更清晰 */
+.moments-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 150px;
+    background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.5));
+    pointer-events: none;
+}
+
+/* 朋友圈内容区域 */
+.moments-content {
+    background: #fff;
+    min-height: calc(100% - 375px);
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+.moment-item {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.moment-header {
+    display: flex;
+    align-items: flex-start;
+}
+
+.moment-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+    margin-right: 10px;
+    flex-shrink: 0;
+}
+
+.moment-info {
+    flex: 1;
+}
+
+.moment-name {
+    font-size: 16px;
+    font-weight: 500;
+    color: #576b95;
+    margin-bottom: 6px;
+}
+
+.moment-text {
+    font-size: 15px;
+    color: #333;
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+.moment-images {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.moment-image {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.moment-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    color: #999;
+}
+
+.moment-time {
+    font-size: 13px;
+}
+
+.moment-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.moment-action {
+    color: #576b95;
+}
+
+/* 朋友圈导航栏 */
+.moments-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 44px;
+    background: transparent;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15px;
+    z-index: 10;
+    transition: all 0.3s ease;
+}
+
+.moments-nav.scrolled {
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.moments-nav .title {
+    color: #fff;
+    font-size: 17px;
+    font-weight: 500;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.moments-nav.scrolled .title {
+    color: #000;
+    opacity: 1;
+}
+
+.moments-nav .icon-camera {
+    width: 24px;
+    height: 24px;
+    filter: invert(100%);
+}
+
+.moments-nav.scrolled .icon-camera {
+    filter: none;
+}
  
