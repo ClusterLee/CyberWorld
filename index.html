@@ -703,7 +703,7 @@
                                     id: 18,
                                     name: 'Wendy',
                                     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Wendy',
-                                    region: '���西 西安'
+                                    region: '西 西安'
                                 }
                             ]
                         },
@@ -732,11 +732,21 @@
                     this.currentTab = tabId;
                 },
                 openChat(chat) {
-                    if (!chat.messages) {
-                        chat.messages = [];
-                    }
                     this.currentChat = chat;
                     this.showChat = true;
+                    
+                    // 清除未读消息提醒
+                    if (chat.unread) {
+                        chat.unread = 0;  // 将未读消息数重置为0
+                    }
+                    
+                    // 滚动到底部
+                    this.$nextTick(() => {
+                        const chatContent = document.querySelector('.chat-content');
+                        if (chatContent) {
+                            chatContent.scrollTop = chatContent.scrollHeight;
+                        }
+                    });
                 },
                 goBack() {
                     // 关闭聊天页面
