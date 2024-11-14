@@ -304,7 +304,7 @@
                         <input 
                             type="text" 
                             v-model="messageText" 
-                            placeholder="输���消..."
+                            placeholder="输消..."
                             @keyup.enter="sendMessage"
                         >
                         <div class="image-preview-container" v-if="selectedImages.length">
@@ -389,8 +389,8 @@
 
             <!-- 朋友圈页面 -->
             <div class="page moments-page" :class="{ 'slide-in': showMoments }">
-                <!-- 导航栏 -->
-                <div class="moments-nav" :class="{ 'scrolled': isNavScrolled }">
+                <!-- 朋友圈导航栏 -->
+                <div class="moments-nav" :style="navStyle">
                     <div class="back-button" @click="closeMoments">
                         <i class="icon-back"></i>
                     </div>
@@ -401,7 +401,7 @@
                 </div>
 
                 <!-- 朋友圈内容区域 -->
-                <div class="moments-content" @scroll="handleMomentsScroll">
+                <div class="moments-content">
                     <!-- 顶部背景区域 -->
                     <div class="moments-header">
                         <img class="moments-bg" src="https://picsum.photos/800/600" alt="朋友圈背景">
@@ -939,7 +939,8 @@
                             ],
                             time: "10小时前"
                         }
-                    ]
+                    ],
+                    scrollTop: 0,  // 添加滚动位置记录
                 }
             },
             methods: {
@@ -1114,6 +1115,7 @@
                 openMoments() {
                     this.showMoments = true;
                     this.showChat = false;
+                    this.isNavWhite = false; // 重置导航栏状态
                 },
                 
                 closeMoments() {

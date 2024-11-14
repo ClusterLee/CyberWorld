@@ -1605,44 +1605,35 @@ body {
 
 /* 朋友圈导航栏 */
 .moments-nav {
-    position: absolute;
+    position: sticky;
     top: 0;
     left: 0;
     right: 0;
     height: 44px;
-    background: transparent;
+    z-index: 99;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 15px;
-    z-index: 10;
-    transition: all 0.3s ease;
+    background: rgb(255, 255, 255);
 }
 
-.moments-nav.scrolled {
-    display: none;
-}
-
-.moments-nav .title {
-    color: #fff;
-    font-size: 17px;
-    font-weight: 500;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.moments-nav.scrolled .title {
-    color: #000;
-    opacity: 1;
-}
-
+/* 导航栏图标样式 */
+.moments-nav .icon-back,
 .moments-nav .icon-camera {
     width: 24px;
     height: 24px;
-    filter: invert(100%);
+    transition: all 0.3s;  /* 添加过渡效果 */
 }
 
-.moments-nav.scrolled .icon-camera {
-    filter: none;
+/* 标题样式 */
+.moments-nav .title {
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 17px;
+    font-weight: 500;
+    pointer-events: none;  /* 防止标题影响点击事件 */
 }
  
