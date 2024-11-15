@@ -1675,3 +1675,133 @@ background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAY
     border-radius: 15px;
 }
  
+
+
+.draw-page {
+    position: fixed;
+    top: 0;
+    left: 100%;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    transition: transform 0.3s ease;
+    z-index: 100;
+}
+
+.draw-page.slide-in {
+    transform: translateX(-100%);
+}
+
+.draw-content {
+    padding: 15px;
+    height: calc(100% - 120px);
+    overflow-y: auto;
+}
+
+.section {
+    margin-bottom: 20px;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.diamond-icon {
+    width: 16px;
+    height: 16px;
+    background: linear-gradient(135deg, #9C6FFF, #8E5CFF);
+    margin-right: 8px;
+    transform: rotate(45deg);
+}
+
+.prompt-input {
+    position: relative;
+    border: 1px solid #E6E6FA;
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.prompt-input textarea {
+    width: 100%;
+    min-height: 100px;
+    border: none;
+    resize: none;
+    outline: none;
+}
+
+.word-count {
+    position: absolute;
+    bottom: 8px;
+    right: 12px;
+    color: #999;
+    font-size: 12px;
+}
+
+.slider-container {
+    padding: 0 10px;
+}
+
+.slider {
+    width: 100%;
+    height: 4px;
+    background: #E6E6FA;
+    -webkit-appearance: none;
+    border-radius: 2px;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #8E5CFF;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.style-tabs {
+    display: flex;
+    overflow-x: auto;
+    gap: 10px;
+    padding: 5px 0;
+}
+
+.style-tab {
+    padding: 6px 16px;
+    background: #F5F5F5;
+    border-radius: 16px;
+    white-space: nowrap;
+}
+
+.style-tab.active {
+    background: #8E5CFF;
+    color: white;
+}
+
+.generate-button {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 16px;
+    background: white;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+}
+
+.generate-button button {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #9C6FFF, #8E5CFF);
+    color: white;
+    border: none;
+    border-radius: 24px;
+    font-size: 16px;
+}
+
+.vip-hint {
+    text-align: center;
+    color: #999;
+    font-size: 12px;
+    margin-top: 8px;
+}
