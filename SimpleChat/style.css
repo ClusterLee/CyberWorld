@@ -1104,7 +1104,6 @@ background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAY
 .icon-arrow {
     width: 16px;
     height: 16px;
-    background: url('path/to/arrow.png') no-repeat center;
     background-size: contain;
     opacity: 0.3;
 }
