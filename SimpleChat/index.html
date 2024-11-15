@@ -304,7 +304,7 @@
                         <input 
                             type="text" 
                             v-model="messageText" 
-                            placeholder="输消..."
+                            placeholder="输..."
                             @keyup.enter="sendMessage"
                         >
                         <div class="image-preview-container" v-if="selectedImages.length">
@@ -451,7 +451,14 @@
                 <div class="preview-container">
                     <img :src="previewImages[currentPreviewIndex]" 
                          class="preview-image"
-                         @click="nextImage">
+                         @click="nextImage"
+                         @touchstart="handleTouchStart"
+                         @touchmove="handleTouchMove"
+                         @touchend="handleTouchEnd"
+                         @mousedown="handleMouseDown"
+                         @mousemove="handleMouseMove"
+                         @mouseup="handleMouseUp"
+                         @mouseleave="handleMouseUp">
                 </div>
                 
                 <div class="preview-indicator">{{ currentPreviewIndex + 1 }}/{{ previewImages.length }}</div>
@@ -956,6 +963,10 @@
                     scrollTop: 0,  // 添加滚动位置记录
                     previewImages: [], // 预览图片数组
                     currentPreviewIndex: 0, // 当前预览的图片索引
+                    startX: 0,
+                    endX: 0,
+                    isDragging: false,
+                    isMoved: false
                 }
             },
             methods: {
@@ -1143,7 +1154,7 @@
                 },
                 
                 previewImage(images, index = 0) {
-                    // 如果传入的是单张图片，将其转换为数组
+                    // 如果传入的是单张片，将其转换为数组
                     this.previewImages = Array.isArray(images) ? images : [images];
                     this.currentPreviewIndex = index;
                     
@@ -1165,6 +1176,69 @@
                         this.currentPreviewIndex++;
                     } else {
                         this.currentPreviewIndex = 0; // 循环到第一张
+                    }
+                },
+                handleTouchStart(event) {
+                    this.startX = event.touches[0].clientX;
+                    this.isDragging = true;
+                    this.isMoved = false; // 添加移动标记
+                },
+                handleTouchMove(event) {
+                    if (this.isDragging) {
+                        event.preventDefault();
+                        this.isMoved = true; // 标记已经移动
+                    }
+                },
+                handleTouchEnd(event) {
+                    if (!this.isDragging) return;
+                    
+                    // 只有发生了移动才处理滑动
+                    if (this.isMoved) {
+                        this.endX = event.changedTouches[0].clientX;
+                        this.handleSwipe();
+                    }
+                    
+                    this.isDragging = false;
+                    this.isMoved = false;
+                },
+                handleMouseDown(event) {
+                    this.startX = event.clientX;
+                    this.isDragging = true;
+                    this.isMoved = false; // 添加移动标记
+                },
+                handleMouseMove(event) {
+                    if (this.isDragging) {
+                        event.preventDefault();
+                        this.isMoved = true; // 标记已经移动
+                    }
+                },
+                handleMouseUp(event) {
+                    if (!this.isDragging) return;
+                    
+                    // 只有发生了移动才处理滑动
+                    if (this.isMoved) {
+                        this.endX = event.clientX;
+                        this.handleSwipe();
+                    }
+                    
+                    this.isDragging = false;
+                    this.isMoved = false;
+                },
+                handleSwipe() {
+                    const swipeDistance = this.startX - this.endX;
+                    
+                    if (Math.abs(swipeDistance) > 5) {
+                        if (swipeDistance > 0) {
+                            // 向左滑动，显示下一张
+                            this.nextImage();
+                        } else {
+                            // 向右滑动，显示上一张
+                            if (this.currentPreviewIndex > 0) {
+                                this.currentPreviewIndex--;
+                            } else {
+                                this.currentPreviewIndex = this.previewImages.length - 1;
+                            }
+                        }
                     }
                 }
             },
