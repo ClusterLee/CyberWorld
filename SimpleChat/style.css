@@ -1686,10 +1686,12 @@ background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAY
     background: #fff;
     transition: transform 0.3s ease;
     z-index: 100;
+    visibility: hidden;
 }
 
 .draw-page.slide-in {
     transform: translateX(-100%);
+    visibility: visible;
 }
 
 .draw-content {
