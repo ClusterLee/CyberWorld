@@ -1748,6 +1748,7 @@ background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAY
     height: 4px;
     background: #E6E6FA;
     -webkit-appearance: none;
+    appearance: none;  /* 添加标准属性 */
     border-radius: 2px;
 }
 
