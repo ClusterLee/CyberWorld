@@ -12,6 +12,7 @@
     perspective: 1000;
     -webkit-perspective: 1000;
     padding-bottom: env(safe-area-inset-bottom);
+    min-height: 100vh;
 }
 
 .wechat-container::before {
@@ -144,12 +145,17 @@
     left: 0;
     right: 0;
     height: 60px;
-    background-color: #f7f7f7;
+    padding-bottom: env(safe-area-inset-bottom);
+    background-color: rgba(247, 247, 247, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     display: flex;
     justify-content: space-around;
     align-items: center;
     border-top: 0.5px solid rgba(0, 0, 0, 0.1);
-    z-index: 9999;
+    z-index: 999;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
 }
 
 .tab-item {
@@ -1803,4 +1809,10 @@ body {
     color: #999;
     font-size: 12px;
     margin-top: 8px;
+}
+
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+    .tab-bar {
+        height: calc(60px + env(safe-area-inset-bottom));
+    }
 }
