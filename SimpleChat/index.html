@@ -27,17 +27,6 @@
                 </div>
 
 
-                <!-- 底部导航栏 -->
-                <div class="tab-bar">
-                    <div v-for="tab in tabs" :key="tab.id" class="tab-item" :class="{ 'active': currentTab === tab.id }"
-                        @click="switchTab(tab.id)">
-                        <i :class="tab.icon"></i>
-                        <span>{{ tab.name }}</span>
-                        <span v-if="tab.unread" class="badge">{{ tab.unread }}</span>
-                        <span v-if="tab.hasNew" class="dot"></span>
-                    </div>
-                </div>
-
 
                 <!-- 聊天列表页面 -->
                 <div v-if="currentTab === 'wechat'" class="chat-list">
@@ -249,6 +238,20 @@
                         </div>
                     </div>
                 </div>
+
+
+                <!-- 底部导航栏 -->
+                <div class="tab-bar">
+                    <div v-for="tab in tabs" :key="tab.id" class="tab-item" :class="{ 'active': currentTab === tab.id }"
+                        @click="switchTab(tab.id)">
+                        <i :class="tab.icon"></i>
+                        <span>{{ tab.name }}</span>
+                        <span v-if="tab.unread" class="badge">{{ tab.unread }}</span>
+                        <span v-if="tab.hasNew" class="dot"></span>
+                    </div>
+                </div>
+
+
 
 
             </div>
