@@ -169,13 +169,6 @@
     -webkit-transform: translateZ(0);
 }
 
-/* 移动端样式 */
-@media screen and (max-width: 767px) and (hover: none) and (pointer: coarse) {
-    .tab-bar {
-        bottom: 120px; /* 移动端时放在更高的位置 */
-    }
-    
-}
 
 .tab-item {
     flex: 1;
