@@ -164,8 +164,12 @@
 
 /* 移动端样式 */
 @media screen and (max-width: 767px) and (hover: none) and (pointer: coarse) {
-    .tab-bar {
-        bottom: 120px; /* 移动端时放在更高的位置 */
+    .wechat-container {
+        min-height: 100vh;
+        /* 处理 iOS Safari 的视口问题 */
+        min-height: -webkit-fill-available;
+        /* 添加安全区域内边距 */
+        padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
     }
     
 }
