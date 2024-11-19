@@ -272,13 +272,17 @@
                     </div>
                 </div>
                 <div class="chat-content">
-                    <div class="chat-messages" v-if="currentChat && currentChat.messages && currentChat.messages.length">
-                        <div v-for="msg in currentChat.messages" :key="msg.id" class="message-item" :class="{ 'self': msg.isSelf }">
+                    <div class="chat-messages"
+                        v-if="currentChat && currentChat.messages && currentChat.messages.length">
+                        <div v-for="msg in currentChat.messages" :key="msg.id" class="message-item"
+                            :class="{ 'self': msg.isSelf }">
                             <!-- 添加发送者头像 -->
-                            <img :src="msg.isSelf ? 'https://api.dicebear.com/7.x/avataaars/svg?seed=User' : currentChat.avatar" class="message-avatar">
+                            <img :src="msg.isSelf ? 'https://api.dicebear.com/7.x/avataaars/svg?seed=User' : currentChat.avatar"
+                                class="message-avatar">
                             <!-- 消息内容容器 -->
                             <div class="message-content">
-                                <img v-if="msg.type === 'image'" :src="msg.content" class="message-image" @click="previewImage(msg.content)">
+                                <img v-if="msg.type === 'image'" :src="msg.content" class="message-image"
+                                    @click="previewImage(msg.content)">
                                 <span v-else>{{ msg.content }}</span>
                             </div>
                         </div>
@@ -444,11 +448,9 @@
                     <div class="draw-card">
                         <div class="section-title">选择模板</div>
                         <div class="template-list">
-                            <div v-for="template in templates" 
-                                 :key="template.id"
-                                 class="template-item"
-                                 :class="{ active: currentTemplate === template.id }"
-                                 @click="selectTemplate(template.id)">
+                            <div v-for="template in templates" :key="template.id" class="template-item"
+                                :class="{ active: currentTemplate === template.id }"
+                                @click="selectTemplate(template.id)">
                                 <div class="template-icon">
                                     <img :src="template.icon" :alt="template.name">
                                 </div>
@@ -461,10 +463,7 @@
                     <div class="draw-card">
                         <div class="section-title">输入提示词</div>
                         <div class="prompt-input">
-                            <textarea 
-                                v-model="prompt"
-                                :placeholder="getPlaceholder()"
-                                maxlength="1000">
+                            <textarea v-model="prompt" :placeholder="getPlaceholder()" maxlength="1000">
                             </textarea>
                             <div class="word-count">{{ prompt.length }}/1000</div>
                         </div>
@@ -474,14 +473,25 @@
                     <div class="draw-card" v-if="showReferenceUpload">
                         <div class="section-title">上传参考图</div>
                         <div class="upload-area">
-                            <div v-for="(img, index) in referenceImages" 
-                                 :key="index" 
-                                 class="upload-item">
-                                <img :src="img" class="upload-preview">
-                                <div class="upload-remove" @click="removeImage(index)">×</div>
-                            </div>
-                            <div class="upload-item" v-if="referenceImages.length < maxImages" @click="uploadImage">
-                                <div class="plus-icon"></div>
+                            <div class="upload-group" v-for="(type, index) in currentTemplateConfig.reference.types" :key="index">
+                                <div v-if="referenceImages[index]" class="upload-container">
+                                    <div class="upload-item">
+                                        <img :src="referenceImages[index]" class="upload-preview">
+                                        <div class="upload-remove" @click.stop="removeImage(index)">×</div>
+                                    </div>
+                                    <div class="upload-label">{{type}}</div>
+                                </div>
+                                <div v-else class="upload-container">
+                                    <div class="upload-item empty" @click="triggerFileInput(index)">
+                                        <div class="plus-icon"></div>
+                                        <input type="file" 
+                                               :ref="`fileInput${index}`"
+                                               style="display: none"
+                                               accept="image/*"
+                                               @change="handleFileChange($event, index)">
+                                    </div>
+                                    <div class="upload-label">{{type}}</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -786,7 +796,7 @@
                                     id: 9,
                                     name: 'David',
                                     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=David',
-                                    region: '四川 成都'
+                                    region: '四川 成'
                                 },
                                 {
                                     id: 10,
@@ -860,7 +870,7 @@
                                     id: 18,
                                     name: 'Wendy',
                                     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Wendy',
-                                    region: '西 西安'
+                                    region: '西 西'
                                 }
                             ]
                         },
@@ -891,7 +901,7 @@
                             id: 1,
                             name: "张三",
                             avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alice",
-                            text: "今天天气真好 ☀️",
+                            text: "天天气真好 ☀️",
                             images: [
                                 "https://picsum.photos/300/300?random=1",
                                 "https://picsum.photos/300/300?random=2",
@@ -1006,46 +1016,60 @@
                     /*画一画*/
                     showDrawPage: false,
                     drawPrompt: '',
-                    similarity: 75,
-                    currentStyle: '推荐',
-                    styles: ['推荐', '动漫', '创意艺术', '人物写实', '更多'],
                     templates: [
-                        { 
-                            id: 'all', 
+                        {
+                            id: 'all',
                             name: '全能',
                             icon: 'https://api.iconify.design/material-symbols:auto-awesome.svg?color=%238E5CFF',
                             placeholder: '请描述您想要的画面，例如：星空下的城市夜景，霓虹灯闪烁'
                         },
-                        { 
-                            id: 'photo', 
+                        {
+                            id: 'photo',
                             name: '写真',
                             icon: 'https://api.iconify.design/material-symbols:photo-camera.svg?color=%238E5CFF',
-                            placeholder: '请描述人物特征和场景，例如：年轻女孩，白色连衣裙，樱花林'
+                            placeholder: '请描述人物特征和场景，例如：年轻女孩，白色连衣裙，樱花林',
+                            reference: {
+                                maxImages: 2,
+                                types: ['人脸参考', '风格参考']
+                            }
                         },
-                        { 
-                            id: 'interior', 
+                        {
+                            id: 'interior',
                             name: '装修',
                             icon: 'https://api.iconify.design/material-symbols:chair.svg?color=%238E5CFF',
-                            placeholder: '请描述装修风格和空间，例如：现代简约客厅，大落地窗，灰白色调'
+                            placeholder: '请描述装修风格和空间，例如：现代简约客厅，大落地窗，灰白色调',
+                            reference: {
+                                maxImages: 1,
+                                types: ['风格参考']
+                            }
                         },
-                        { 
-                            id: 'commerce', 
+                        {
+                            id: 'commerce',
                             name: '电商',
                             icon: 'https://api.iconify.design/material-symbols:shopping-bag.svg?color=%238E5CFF',
-                            placeholder: '请描述商品展示需求，例如：白色陶瓷咖啡杯，简约风格产品图'
+                            placeholder: '请描述商品展示求，例如：白色陶瓷咖啡杯，简约风格产品图',
+                            reference: {
+                                maxImages: 1,
+                                types: ['商品参考']
+                            }
                         },
-                        { 
-                            id: 'ad', 
+                        {
+                            id: 'ad',
                             name: '广告',
                             icon: 'https://api.iconify.design/material-symbols:ads-click.svg?color=%238E5CFF',
-                            placeholder: '请描述广告创意，例如：运动鞋广告，充满动感，年轻活力'
+                            placeholder: '请描述广告创意，例如：运动鞋广告，充满动感，年轻活力',
+                            reference: {
+                                maxImages: 1,
+                                types: ['创意参考']
+                            }
                         }
                     ],
                     currentTemplate: 'all',
                     prompt: '',
                     referenceImages: [],
-                    maxImages: 4,
-                    showReferenceUpload: false
+
+
+
                 }
             },
             methods: {
@@ -1128,7 +1152,7 @@
                                 time: new Date().toLocaleTimeString()
                             };
                             this.currentChat.messages.push(imageMessage);
-                            // 如果是最��一张图片，更新最后一条消息
+                            // 如果是最一张图片，更新最后一条消息
                             if (index === this.selectedImages.length - 1) {
                                 this.currentChat.lastMessage = '[图片]';
                                 this.currentChat.time = new Date().toLocaleTimeString();
@@ -1181,7 +1205,7 @@
                         const offset = elementRect.top - containerRect.top;
 
                         container.scrollTo({
-                            top: container.scrollTop + offset - 60, // 考虑顶部固定区域高度
+                            top: container.scrollTop + offset - 60, // 考虑顶固定区域高度
                             behavior: 'smooth'
                         });
                     }
@@ -1344,39 +1368,70 @@
                     const template = this.templates.find(t => t.id === this.currentTemplate);
                     return template ? template.placeholder : '请输入您想要实现的画面内容...';
                 },
-                // 选择模板
-                selectTemplate(templateId) {
-                    this.currentTemplate = templateId;
-                    // 根据模板类型决定是否显示参考图上传
-                    this.showReferenceUpload = ['photo', 'interior'].includes(templateId);
-                },
+
                 // 上传图片
-                uploadImage() {
-                    // 实现图片上传逻辑
-                    const input = document.createElement('input');
-                    input.type = 'file';
-                    input.accept = 'image/*';
-                    input.onchange = (e) => {
-                        const file = e.target.files[0];
-                        if (file) {
-                            const reader = new FileReader();
-                            reader.onload = (e) => {
-                                this.referenceImages.push(e.target.result);
-                            };
-                            reader.readAsDataURL(file);
-                        }
+                triggerFileInput(index) {
+                    const fileInput = this.$refs[`fileInput${index}`];
+                    if (fileInput && fileInput[0]) {
+                        fileInput[0].click();
+                    }
+                },
+                // 处理文件选择
+                handleFileChange(event, index) {
+                    const file = event.target.files[0];
+                    if (!file) return;
+
+                    // 验证文件类型
+                    if (!file.type.startsWith('image/')) {
+                        alert('请选择图片文件');
+                        return;
+                    }
+
+                    // 验证文件大小 (这里限制为 5MB)
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert('图片大小不能超过 5MB');
+                        return;
+                    }
+
+                    // 创建预览
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        this.referenceImages[index] = e.target.result;
                     };
-                    input.click();
+                    reader.readAsDataURL(file);
+
+                    // 清空 input 以允许重复选择同一文件
+                    event.target.value = '';
                 },
                 // 移除图片
                 removeImage(index) {
-                    this.referenceImages.splice(index, 1);
+                    // 确保在下一个事件循环中执行，避免可能的冲突
+                    this.$nextTick(() => {
+                        this.referenceImages[index] = null;
+                        // 重置对应的文件输入框
+                        const fileInput = this.$refs[`fileInput${index}`];
+                        if (fileInput && fileInput[0]) {
+                            fileInput[0].value = '';
+                        }
+                    });
+                },
+                // 切换模板时重置图片
+                selectTemplate(templateId) {
+                    this.currentTemplate = templateId;
+                    const maxImages = this.templates.find(t => t.id === templateId)?.reference?.maxImages || 0;
+                    this.referenceImages = new Array(maxImages).fill(null);
                 }
             },
             computed: {
                 getCurrentTabName() {
                     const currentTab = this.tabs.find(tab => tab.id === this.currentTab);
                     return currentTab ? currentTab.name : '信';
+                },
+                currentTemplateConfig() {
+                    return this.templates.find(t => t.id === this.currentTemplate)
+                },
+                showReferenceUpload() {
+                    return !!this.currentTemplateConfig?.reference
                 }
             }
         });
