@@ -1859,8 +1859,3 @@ body {
     margin-top: 8px;
 }
 
-@supports (padding-bottom: env(safe-area-inset-bottom)) {
-    .tab-bar {
-        height: calc(60px + env(safe-area-inset-bottom));
-    }
-}
