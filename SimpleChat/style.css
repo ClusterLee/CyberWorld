@@ -290,6 +290,8 @@ body {
     background: rgba(247, 247, 247, 0.3);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
+    top: env(safe-area-inset-top); /* 从安全区域开始 */
+    bottom: env(safe-area-inset-bottom); /* 从安全区域开始 */
 }
 
 .main-page {
