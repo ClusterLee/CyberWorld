@@ -1783,7 +1783,8 @@ body {
     padding: 16px;
     display: flex;
     flex-direction: column;
-    gap: 20px;  /* 增加区域间距 */
+    gap: 12px;  /* 将间距从20px减小到12px */
+    padding-bottom: 80px; /* 为底部按钮留出空间 */
 }
 
 .section {
@@ -1794,10 +1795,10 @@ body {
     font-size: 15px;
     font-weight: 500;
     color: #333;
-    padding: 12px 16px;
+    padding: 8px 16px; /* 减小上下内边距 */
     background: #F8F9FC;  /* 浅灰色背景 */
     border-radius: 8px;   /* 圆角 */
-    margin-bottom: 12px;
+    margin-bottom: 8px; /* 减小底部边距 */
     display: flex;
     align-items: center;
 }
@@ -1815,9 +1816,7 @@ body {
 .draw-card {
     background: #fff;
     border-radius: 12px;
-    padding: 16px;
-    padding-left: 0px;
-    padding-right: 0px;
+    padding: 12px 0; /* 减小上下内边距 */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
@@ -2014,10 +2013,10 @@ body {
     bottom: 0;
     left: 0;
     right: 0;
-    padding: 16px;
+    padding: 12px 16px;
     background: white;
     box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-    padding-bottom: calc(16px + env(safe-area-inset-bottom));
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
 }
 
 .generate-button {
