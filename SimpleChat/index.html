@@ -138,7 +138,7 @@
                             </div>
                             <div class="discover-item">
                                 <img src="https://api.iconify.design/material-symbols:play-circle.svg?color=%23FA9D3B"
-                                    alt="视频号" class="discover-icon">
+                                    alt="���频号" class="discover-icon">
                                 <span>视频号</span>
                                 <i class="icon-arrow"></i>
                             </div>
@@ -272,13 +272,15 @@
                     </div>
                 </div>
                 <div class="chat-content">
-                    <div class="chat-messages"
-                        v-if="currentChat && currentChat.messages && currentChat.messages.length">
-                        <div v-for="msg in currentChat.messages" :key="msg.id" class="message-item"
-                            :class="{ 'self': msg.isSelf }">
-                            <img v-if="msg.type === 'image'" :src="msg.content" class="message-image"
-                                @click="previewImage(msg.content)">
-                            <span v-else>{{ msg.content }}</span>
+                    <div class="chat-messages" v-if="currentChat && currentChat.messages && currentChat.messages.length">
+                        <div v-for="msg in currentChat.messages" :key="msg.id" class="message-item" :class="{ 'self': msg.isSelf }">
+                            <!-- 添加发送者头像 -->
+                            <img :src="msg.isSelf ? 'https://api.dicebear.com/7.x/avataaars/svg?seed=User' : currentChat.avatar" class="message-avatar">
+                            <!-- 消息内容容器 -->
+                            <div class="message-content">
+                                <img v-if="msg.type === 'image'" :src="msg.content" class="message-image" @click="previewImage(msg.content)">
+                                <span v-else>{{ msg.content }}</span>
+                            </div>
                         </div>
                     </div>
                     <div v-else class="message-hint">暂无聊天记录</div>
