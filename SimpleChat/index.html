@@ -442,7 +442,7 @@
                 <div class="draw-content">
                     <!-- 模型选择区域 -->
                     <div class="draw-card">
-                        <div class="section-title">选择模型</div>
+                        <div class="section-title">选择模板</div>
                         <div class="template-list">
                             <div v-for="template in templates" 
                                  :key="template.id"
@@ -481,7 +481,7 @@
                                 <div class="upload-remove" @click="removeImage(index)">×</div>
                             </div>
                             <div class="upload-item" v-if="referenceImages.length < maxImages" @click="uploadImage">
-                                <i class="plus-icon"></i>
+                                <div class="plus-icon"></div>
                             </div>
                         </div>
                     </div>
@@ -1128,7 +1128,7 @@
                                 time: new Date().toLocaleTimeString()
                             };
                             this.currentChat.messages.push(imageMessage);
-                            // 如果是最后一张图片，更新最后一条消息
+                            // 如果是最��一张图片，更新最后一条消息
                             if (index === this.selectedImages.length - 1) {
                                 this.currentChat.lastMessage = '[图片]';
                                 this.currentChat.time = new Date().toLocaleTimeString();
@@ -1233,7 +1233,7 @@
                 },
 
                 previewImage(images, index = 0) {
-                    // 如果传入的是单张片，将���转换为数组
+                    // 如果传入的是单张片，将转换为数组
                     this.previewImages = Array.isArray(images) ? images : [images];
                     this.currentPreviewIndex = index;
 

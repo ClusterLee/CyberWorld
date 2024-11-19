@@ -693,15 +693,26 @@ body {
 
 /* 联系人分组标题 */
 .section-title {
-    padding: 8px 16px;
-    color: #666;
-    font-size: 14px;
-    background: #f7f7f7;
-    position: sticky;
-    top: 52px;
-    z-index: 5;
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
+    font-size: 15px;
+    font-weight: 500;
+    color: #333;
+    padding: 12px 16px;
+    background: #F8F9FC;  /* 浅灰色背景 */
+    border-radius: 8px;   /* 圆角 */
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+}
+
+/* 标题前的紫色竖条 */
+.section-title:before {
+    content: '';
+    width: 3px;
+    height: 16px;
+    background: #8E5CFF;
+    border-radius: 1.5px;
+    margin-right: 8px;
+    display: inline-block;
 }
 
 /* 联系人项样式 */
@@ -925,7 +936,7 @@ body {
     flex: 1;
     background: rgba(247, 247, 247, 0.5);
     padding-top: calc(44px + env(safe-area-inset-top)); /* 顶部状态栏高度 + 安全区域 */
-    padding-bottom: calc(60px + env(safe-area-inset-bottom)); /* 底部导航栏高度 + 安全区域 */
+    padding-bottom: calc(60px + env(safe-area-inset-bottom)); /* 底部导航栏��度 + 安全区域 */
 }
 
 .user-info {
@@ -976,7 +987,7 @@ body {
     color: #07c160;
 }
 
-/* 添加消息时间样式 */
+/* 加消息时间样式 */
 .message-time {
     font-size: 12px;
     color: #999;
@@ -1095,13 +1106,13 @@ body {
     display: flex;
     flex-direction: column;
     padding-top: 44px; /* header的高度 */
-    padding-top: calc(44px + env(safe-area-inset-top)); /* 顶部状态栏高度 + 安全区域 */
+    padding-top: calc(44px + env(safe-area-inset-top)); /* 顶部状栏高度 + 安全区域 */
 
  
 }
 
 .contact-detail-content{
-    padding-top: calc(env(safe-area-inset-top)); /* 顶部状态栏高度 + 全区域 */
+    padding-top: calc(env(safe-area-inset-top)); /* 顶部状态栏度 + 全区域 */
 }
 
 .contact-detail-page.slide-in {
@@ -1401,7 +1412,7 @@ body {
     width: 0;  /* 在移动端隐滚动条 */
 }
 
-/* 修改未读消息徽章的样式 */
+/* 修改读消息徽章的样式 */
 .chat-item .badge {
     position: absolute;
     left: 5px; /* 调整到头像左上角 */
@@ -1772,7 +1783,7 @@ body {
     padding: 16px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 20px;  /* 增加区域间距 */
 }
 
 .section {
@@ -1783,27 +1794,30 @@ body {
     font-size: 15px;
     font-weight: 500;
     color: #333;
+    padding: 12px 16px;
+    background: #F8F9FC;  /* 浅灰色背景 */
+    border-radius: 8px;   /* 圆角 */
     margin-bottom: 12px;
-    position: relative;
-    padding-left: 12px;
+    display: flex;
+    align-items: center;
 }
 
 .section-title:before {
     content: '';
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
     width: 3px;
-    height: 14px;
+    height: 16px;
     background: #8E5CFF;
     border-radius: 1.5px;
+    margin-right: 8px;
+    display: inline-block;
 }
 
 .draw-card {
     background: #fff;
     border-radius: 12px;
     padding: 16px;
+    padding-left: 0px;
+    padding-right: 0px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
@@ -1837,11 +1851,9 @@ body {
 
 .template-list {
     display: flex;
-    gap: 12px;
-    overflow-x: auto;
-    padding: 4px 0;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
+    justify-content: space-between;  /* 平均分布空间 */
+    padding: 16px;
+    width: 100%;
 }
 
 .template-list::-webkit-scrollbar {
@@ -1853,53 +1865,86 @@ body {
     flex-direction: column;
     align-items: center;
     gap: 8px;
-    min-width: 72px;
+    flex: 1;  /* 平均分配宽度 */
+    max-width: 64px;  /* 限制最大宽度 */
 }
 
 .template-icon {
     width: 48px;
     height: 48px;
-    border-radius: 12px;
-    background: #f7f7f7;
     display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: 12px;
+    background: #F8F9FC;
     transition: all 0.3s ease;
 }
 
 .template-item.active .template-icon {
     background: #8E5CFF;
-    color: white;
 }
 
 .template-name {
-    font-size: 12px;
+    font-size: 13px;
     color: #666;
+    text-align: center;
+    white-space: nowrap;  /* 防止文字换行 */
 }
 
 .template-item.active .template-name {
     color: #8E5CFF;
+    font-weight: 500;
+}
+
+.template-item.active .template-icon img {
+    filter: brightness(0) invert(1);  /* 图标变白 */
 }
 
 .prompt-input {
-    background: #f7f7f7;
-    border-radius: 12px;
-    padding: 12px;
-    margin-bottom: 12px;
+    position: relative;
+    margin: 0;  /* 移除左右边距 */
+    padding: 0;
+    width: 100%;  /* 确保宽度占满 */
 }
 
+/* 输入框样式 */
 .prompt-input textarea {
     width: 100%;
     min-height: 120px;
-    border: none;
-    background: transparent;
-    resize: none;
-    font-size: 15px;
+    padding: 16px;
+    border: 1px solid #E8E8E8;
+    border-radius: 12px;
+    background: #FFFFFF;
+    font-size: 14px;
     line-height: 1.5;
+    color: #333;
+    resize: none;
+    outline: none;
+    transition: all 0.3s ease;
 }
 
+/* 输入框placeholder样式 */
 .prompt-input textarea::placeholder {
     color: #999;
+    font-size: 14px;
+}
+
+/* 输入框获得焦点时的样式 */
+.prompt-input textarea:focus {
+    border-color: #8E5CFF;
+    box-shadow: 0 0 0 2px rgba(142, 92, 255, 0.1);
+}
+
+/* 字数统计样式 */
+.word-count {
+    position: absolute;
+    bottom: 12px;
+    margin-right: 14px;
+    font-size: 12px;
+    color: #999;
+    background: #fff;
+    padding: 2px 6px;
+    border-radius: 4px;
 }
 
 .upload-area {
@@ -1912,12 +1957,13 @@ body {
     width: 80px;
     height: 80px;
     border-radius: 8px;
-    border: 1px dashed #ddd;
+    border: 1px dashed #E8E8E8;
+    background: #FFFFFF;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #f7f7f7;
-    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 .upload-preview {
@@ -1992,5 +2038,69 @@ body {
 
 .prompt-input {
     position: relative;
+}
+
+/* 每个区域的内容部分增加内边距 */
+.template-list,
+.prompt-input,
+.upload-area {
+    padding: 0 16px;
+}
+
+/* 上传区域样式 */
+.upload-area {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* 上传按钮样式 */
+.upload-item {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    border: 1px dashed #E8E8E8;
+    background: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* 加号图标样式 */
+.plus-icon {
+    position: relative;
+    width: 20px;
+    height: 20px;
+}
+
+.plus-icon:before,
+.plus-icon:after {
+    content: '';
+    position: absolute;
+    background: #8E5CFF;
+}
+
+/* 加号的横线 */
+.plus-icon:before {
+    width: 20px;
+    height: 2px;
+    top: 9px;
+    left: 0;
+}
+
+/* 加号的竖线 */
+.plus-icon:after {
+    width: 2px;
+    height: 20px;
+    left: 9px;
+    top: 0;
+}
+
+/* 上传按钮悬停效果 */
+.upload-item:hover {
+    border-color: #8E5CFF;
+    background: rgba(142, 92, 255, 0.05);
 }
 
