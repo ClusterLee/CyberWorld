@@ -473,7 +473,8 @@
                     <div class="draw-card" v-if="showReferenceUpload">
                         <div class="section-title">上传参考图</div>
                         <div class="upload-area">
-                            <div class="upload-group" v-for="(type, index) in currentTemplateConfig.reference.types" :key="index">
+                            <div class="upload-group" v-for="(type, index) in currentTemplateConfig.reference.types"
+                                :key="index">
                                 <div v-if="referenceImages[index]" class="upload-container">
                                     <div class="upload-item">
                                         <img :src="referenceImages[index]" class="upload-preview">
@@ -484,11 +485,8 @@
                                 <div v-else class="upload-container">
                                     <div class="upload-item empty" @click="triggerFileInput(index)">
                                         <div class="plus-icon"></div>
-                                        <input type="file" 
-                                               :ref="`fileInput${index}`"
-                                               style="display: none"
-                                               accept="image/*"
-                                               @change="handleFileChange($event, index)">
+                                        <input type="file" :ref="`fileInput${index}`" style="display: none"
+                                            accept="image/*" @change="handleFileChange($event, index)">
                                     </div>
                                     <div class="upload-label">{{type}}</div>
                                 </div>
@@ -1356,12 +1354,59 @@
                     this.drawPrompt = '';
                 },
                 generateImage() {
-                    // 实现图片生成逻辑
-                    console.log('Generating image with:', {
+                    // 检查必要条件
+                    if (!this.currentTemplate) {
+                        alert('请选择一个模板');
+                        return;
+                    }
+
+                    if (!this.prompt.trim()) {
+                        alert('请输入提示词');
+                        return;
+                    }
+
+                    // 获取当前模板配置
+                    const currentTemplateConfig = this.templates.find(t => t.id === this.currentTemplate);
+
+                    // 检查是否需要参考图
+                    if (currentTemplateConfig.reference) {
+                        // 检查是否有上传所有必需的参考图
+                        const requiredCount = currentTemplateConfig.reference.types.length;
+                        const uploadedCount = this.referenceImages.filter(img => img).length;
+
+                        if (uploadedCount < requiredCount) {
+                            const missingTypes = currentTemplateConfig.reference.types
+                                .filter((_, index) => !this.referenceImages[index])
+                                .join('、');
+                            alert(`请上传${missingTypes}参考图`);
+                            return;
+                        }
+                    }
+
+                    // 准备请求数据
+                    const requestData = {
                         template: this.currentTemplate,
-                        prompt: this.prompt,
+                        prompt: this.prompt.trim(),
                         referenceImages: this.referenceImages
-                    });
+                    };
+
+                    // TODO: 调用后端API
+                    console.log('生成图片请求数据:', requestData);
+                    // 这里添加实际的API调用逻辑
+                    // try {
+                    //     const response = await fetch('/api/generate-image', {
+                    //         method: 'POST',
+                    //         headers: {
+                    //             'Content-Type': 'application/json'
+                    //         },
+                    //         body: JSON.stringify(requestData)
+                    //     });
+                    //     const result = await response.json();
+                    //     // 处理返回结果
+                    // } catch (error) {
+                    //     console.error('生成图片失败:', error);
+                    //     alert('生成失败，请重试');
+                    // }
                 },
                 // 获取当前模板的提示文本
                 getPlaceholder() {
@@ -1432,6 +1477,9 @@
                 },
                 showReferenceUpload() {
                     return !!this.currentTemplateConfig?.reference
+                },
+                currentTemplateConfig() {
+                    return this.templates.find(t => t.id === this.currentTemplate) || {};
                 }
             }
         });
