@@ -152,7 +152,7 @@
 
 .tab-bar {
     position: fixed;
-    bottom: env(safe-area-inset-bottom);
+    bottom: 0;
     left: 0;
     right: 0;
     height: 60px;
@@ -1079,7 +1079,7 @@ body {
 }
 
 .contact-detail-content{
-    padding-top: calc(env(safe-area-inset-top)); /* 顶部状态栏高度 + 安全区域 */
+    padding-top: calc(env(safe-area-inset-top)); /* 顶部状态栏高度 + ��全区域 */
 }
 
 .contact-detail-page.slide-in {
