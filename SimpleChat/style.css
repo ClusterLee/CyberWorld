@@ -1,5 +1,6 @@
 .wechat-container {
     height: 100%;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     background: rgba(247, 247, 247, 0.3);
@@ -14,19 +15,15 @@
     padding-bottom: env(safe-area-inset-bottom);
     min-height: 100vh;
     padding-top: env(safe-area-inset-top);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-top: constant(safe-area-inset-top, 0px);
+    padding-bottom: constant(safe-area-inset-bottom, 0px);
+    padding-left: constant(safe-area-inset-left, 0px);
+    padding-right: constant(safe-area-inset-right, 0px);
 }
 
-.wechat-container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    z-index: -1;
-}
+
 
 .header {
     height: 44px;
@@ -1072,7 +1069,7 @@ body {
 }
 
 .contact-detail-content{
-    padding-top: calc(env(safe-area-inset-top)); /* 顶部状态栏高度 + ��全区域 */
+    padding-top: calc(env(safe-area-inset-top)); /* 顶部状态栏高度 + 全区域 */
 }
 
 .contact-detail-page.slide-in {
