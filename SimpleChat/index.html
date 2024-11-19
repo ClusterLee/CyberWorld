@@ -138,7 +138,7 @@
                             </div>
                             <div class="discover-item">
                                 <img src="https://api.iconify.design/material-symbols:play-circle.svg?color=%23FA9D3B"
-                                    alt="���频号" class="discover-icon">
+                                    alt="频号" class="discover-icon">
                                 <span>视频号</span>
                                 <i class="icon-arrow"></i>
                             </div>
@@ -430,81 +430,67 @@
             </div>
 
 
-            <!-- AI 画一面 -->
-            <div class="page draw-page" :class="{ 'slide-in': showDrawPage }">
+            <!-- AI画一画页面 -->
+            <div class="draw-page" :class="{ 'slide-in': showDrawPage }">
                 <!-- 顶部导航 -->
                 <div class="header">
-                    <div class="back-button" @click="closeDrawPage">
-                        <!-- 返回箭头 -->
-                    </div>
-                    <div class="title">AI绘画</div>
-                    <div class="vip-icon">VIP</div>
+                    <div class="back-button" @click="closeDrawPage"></div>
+                    <div class="title">画一画</div>
+                    <div class="right-placeholder"></div>
                 </div>
 
-                <!-- 主体内容 -->
-                <div class="draw-content">
-                    <!-- 绘画描述部分 -->
-                    <div class="section">
-                        <div class="section-title">
-                            <i class="diamond-icon"></i>
-                            <span>绘画描述</span>
-                            <span class="clear-text" @click="clearPrompt">清空文本</span>
-                        </div>
-                        <div class="prompt-input">
-                            <textarea v-model="drawPrompt" placeholder="请输入您想要实现的画面内容，请以词语、短句为主进行创作，例如：沙滩，少女，二次元，阳光"
-                                maxlength="1000"></textarea>
-                            <span class="word-count">{{drawPrompt.length}}/1000</span>
-                        </div>
-                        <div class="prompt-tools">
-                            <span>绘画教程</span>
-                            <button class="prompt-generator">描述生成器</button>
-                        </div>
-                    </div>
-
-                    <!-- 参考图片上传 -->
-                    <div class="section">
-                        <div class="section-title">
-                            <i class="diamond-icon"></i>
-                            <span>上传参考图</span>
-                        </div>
-                        <div class="upload-desc">AI会在参考图基础上，根据描述进行创作</div>
-                        <div class="upload-area">
-                            <div class="upload-button">
-                                <i class="plus-icon"></i>
+                <!-- 模板选择 -->
+                <div class="template-section">
+                    <div class="template-title">选择模板</div>
+                    <div class="template-list">
+                        <div v-for="template in templates" 
+                             :key="template.id"
+                             class="template-item"
+                             :class="{ active: currentTemplate === template.id }"
+                             @click="selectTemplate(template.id)">
+                            <div class="template-icon">
+                                <img :src="template.icon" :alt="template.name">
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- 相似度滑块 -->
-                    <div class="section">
-                        <div class="similarity-text">相似度 较相似</div>
-                        <div class="slider-container">
-                            <input type="range" v-model="similarity" min="0" max="100" class="slider">
-                        </div>
-                    </div>
-
-                    <!-- 风格选择 -->
-                    <div class="section">
-                        <div class="section-title">
-                            <i class="diamond-icon"></i>
-                            <span>选择风格</span>
-                        </div>
-                        <div class="style-tabs">
-                            <div v-for="style in styles" :key="style" class="style-tab"
-                                :class="{ 'active': currentStyle === style }" @click="currentStyle = style">
-                                {{style}}
-                            </div>
-                        </div>
-                        <div class="style-examples">
-                            <!-- 风格示例图片 -->
+                            <div class="template-name">{{template.name}}</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 底部生成按钮 -->
-                <div class="generate-button">
-                    <button @click="generateImage">立即生成</button>
-                    <div class="vip-hint">开通会员后，绘画不消耗创艺币</div>
+                <!-- 提示词输入 -->
+                <div class="prompt-section">
+                    <div>输入提示词</div>
+                    <div class="prompt-input">
+                        <textarea 
+                            v-model="prompt"
+                            :placeholder="getPlaceholder()"
+                            maxlength="1000">
+                        </textarea>
+                        <div class="word-count">{{ prompt.length }}/1000</div>
+                    </div>
+                </div>
+
+                <!-- 参考图上传 - 仅在特定模板下显示 -->
+                <div class="reference-section" v-if="showReferenceUpload">
+                    <div>上传参考图</div>
+                    <div class="upload-area">
+                        <div v-for="(img, index) in referenceImages" 
+                             :key="index" 
+                             class="upload-item">
+                            <img :src="img" class="upload-preview">
+                            <div class="upload-remove" @click="removeImage(index)">×</div>
+                        </div>
+                        <div class="upload-item" v-if="referenceImages.length < maxImages" @click="uploadImage">
+                            <i class="plus-icon"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 生成按钮 -->
+                <div class="generate-section">
+                    <button class="generate-button" @click="generateImage">
+                        <i class="icon-magic"></i>
+                        <span>开始生成</span>
+                    </button>
                 </div>
             </div>
 
@@ -1021,7 +1007,43 @@
                     similarity: 75,
                     currentStyle: '推荐',
                     styles: ['推荐', '动漫', '创意艺术', '人物写实', '更多'],
-
+                    templates: [
+                        { 
+                            id: 'all', 
+                            name: '全能',
+                            icon: 'https://api.iconify.design/material-symbols:auto-awesome.svg?color=%238E5CFF',
+                            placeholder: '请描述您想要的画面，例如：星空下的城市夜景，霓虹灯闪烁'
+                        },
+                        { 
+                            id: 'photo', 
+                            name: '写真',
+                            icon: 'https://api.iconify.design/material-symbols:photo-camera.svg?color=%238E5CFF',
+                            placeholder: '请描述人物特征和场景，例如：年轻女孩，白色连衣裙，樱花林'
+                        },
+                        { 
+                            id: 'interior', 
+                            name: '装修',
+                            icon: 'https://api.iconify.design/material-symbols:chair.svg?color=%238E5CFF',
+                            placeholder: '请描述装修风格和空间，例如：现代简约客厅，大落地窗，灰白色调'
+                        },
+                        { 
+                            id: 'commerce', 
+                            name: '电商',
+                            icon: 'https://api.iconify.design/material-symbols:shopping-bag.svg?color=%238E5CFF',
+                            placeholder: '请描述商品展示需求，例如：白色陶瓷咖啡杯，简约风格产品图'
+                        },
+                        { 
+                            id: 'ad', 
+                            name: '广告',
+                            icon: 'https://api.iconify.design/material-symbols:ads-click.svg?color=%238E5CFF',
+                            placeholder: '请描述广告创意，例如：运动鞋广告，充满动感，年轻活力'
+                        }
+                    ],
+                    currentTemplate: 'all',
+                    prompt: '',
+                    referenceImages: [],
+                    maxImages: 4,
+                    showReferenceUpload: false
                 }
             },
             methods: {
@@ -1309,9 +1331,45 @@
                 },
                 generateImage() {
                     // 实现图片生成逻辑
-                    console.log('生成图片');
+                    console.log('Generating image with:', {
+                        template: this.currentTemplate,
+                        prompt: this.prompt,
+                        referenceImages: this.referenceImages
+                    });
+                },
+                // 获取当前模板的提示文本
+                getPlaceholder() {
+                    const template = this.templates.find(t => t.id === this.currentTemplate);
+                    return template ? template.placeholder : '请输入您想要实现的画面内容...';
+                },
+                // 选择模板
+                selectTemplate(templateId) {
+                    this.currentTemplate = templateId;
+                    // 根据模板类型决定是否显示参考图上传
+                    this.showReferenceUpload = ['photo', 'interior'].includes(templateId);
+                },
+                // 上传图片
+                uploadImage() {
+                    // 实现图片上传逻辑
+                    const input = document.createElement('input');
+                    input.type = 'file';
+                    input.accept = 'image/*';
+                    input.onchange = (e) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onload = (e) => {
+                                this.referenceImages.push(e.target.result);
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    };
+                    input.click();
+                },
+                // 移除图片
+                removeImage(index) {
+                    this.referenceImages.splice(index, 1);
                 }
-
             },
             computed: {
                 getCurrentTabName() {
