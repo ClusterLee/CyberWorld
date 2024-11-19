@@ -439,48 +439,50 @@
                     <div class="right-placeholder"></div>
                 </div>
 
-                <!-- 模板选择 -->
-                <div class="template-section">
-                    <div class="template-title">选择模板</div>
-                    <div class="template-list">
-                        <div v-for="template in templates" 
-                             :key="template.id"
-                             class="template-item"
-                             :class="{ active: currentTemplate === template.id }"
-                             @click="selectTemplate(template.id)">
-                            <div class="template-icon">
-                                <img :src="template.icon" :alt="template.name">
+                <div class="draw-content">
+                    <!-- 模型选择区域 -->
+                    <div class="draw-card">
+                        <div class="section-title">选择模型</div>
+                        <div class="template-list">
+                            <div v-for="template in templates" 
+                                 :key="template.id"
+                                 class="template-item"
+                                 :class="{ active: currentTemplate === template.id }"
+                                 @click="selectTemplate(template.id)">
+                                <div class="template-icon">
+                                    <img :src="template.icon" :alt="template.name">
+                                </div>
+                                <div class="template-name">{{template.name}}</div>
                             </div>
-                            <div class="template-name">{{template.name}}</div>
                         </div>
                     </div>
-                </div>
 
-                <!-- 提示词输入 -->
-                <div class="prompt-section">
-                    <div>输入提示词</div>
-                    <div class="prompt-input">
-                        <textarea 
-                            v-model="prompt"
-                            :placeholder="getPlaceholder()"
-                            maxlength="1000">
-                        </textarea>
-                        <div class="word-count">{{ prompt.length }}/1000</div>
-                    </div>
-                </div>
-
-                <!-- 参考图上传 - 仅在特定模板下显示 -->
-                <div class="reference-section" v-if="showReferenceUpload">
-                    <div>上传参考图</div>
-                    <div class="upload-area">
-                        <div v-for="(img, index) in referenceImages" 
-                             :key="index" 
-                             class="upload-item">
-                            <img :src="img" class="upload-preview">
-                            <div class="upload-remove" @click="removeImage(index)">×</div>
+                    <!-- 提示词输入区域 -->
+                    <div class="draw-card">
+                        <div class="section-title">输入提示词</div>
+                        <div class="prompt-input">
+                            <textarea 
+                                v-model="prompt"
+                                :placeholder="getPlaceholder()"
+                                maxlength="1000">
+                            </textarea>
+                            <div class="word-count">{{ prompt.length }}/1000</div>
                         </div>
-                        <div class="upload-item" v-if="referenceImages.length < maxImages" @click="uploadImage">
-                            <i class="plus-icon"></i>
+                    </div>
+
+                    <!-- 参考图上传区域 -->
+                    <div class="draw-card" v-if="showReferenceUpload">
+                        <div class="section-title">上传参考图</div>
+                        <div class="upload-area">
+                            <div v-for="(img, index) in referenceImages" 
+                                 :key="index" 
+                                 class="upload-item">
+                                <img :src="img" class="upload-preview">
+                                <div class="upload-remove" @click="removeImage(index)">×</div>
+                            </div>
+                            <div class="upload-item" v-if="referenceImages.length < maxImages" @click="uploadImage">
+                                <i class="plus-icon"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1231,7 +1233,7 @@
                 },
 
                 previewImage(images, index = 0) {
-                    // 如果传入的是单张片，将其转换为数组
+                    // 如果传入的是单张片，将���转换为数组
                     this.previewImages = Array.isArray(images) ? images : [images];
                     this.currentPreviewIndex = index;
 
