@@ -702,18 +702,15 @@ body {
     margin-bottom: 12px;
     display: flex;
     align-items: center;
+
+    padding: 4px 16px;
+    background: #f7f7f7;
+    color: #666;
+    font-size: 14px;
+    top:0px;
 }
 
-/* 标题前的紫色竖条 */
-.section-title:before {
-    content: '';
-    width: 3px;
-    height: 16px;
-    background: #8E5CFF;
-    border-radius: 1.5px;
-    margin-right: 8px;
-    display: inline-block;
-}
+
 
 /* 联系人项样式 */
 .contact-item {
@@ -1323,13 +1320,7 @@ body {
     background: #fff;
 }
 
-.section-title {
-    padding: 4px 16px;
-    background: #f7f7f7;
-    color: #666;
-    font-size: 14px;
-    top:0px;
-}
+
 
 .contact-item {
     display: flex;
@@ -1791,7 +1782,7 @@ body {
     margin-bottom: 20px;
 }
 
-.section-title {
+.draw-section-title {
     font-size: 15px;
     font-weight: 500;
     color: #333;
@@ -1803,7 +1794,7 @@ body {
     align-items: center;
 }
 
-.section-title:before {
+.draw-section-title:before {
     content: '';
     width: 3px;
     height: 16px;

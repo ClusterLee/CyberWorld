@@ -446,7 +446,7 @@
                 <div class="draw-content">
                     <!-- 模型选择区域 -->
                     <div class="draw-card">
-                        <div class="section-title">选择模板</div>
+                        <div class="draw-section-title">选择模板</div>
                         <div class="template-list">
                             <div v-for="template in templates" :key="template.id" class="template-item"
                                 :class="{ active: currentTemplate === template.id }"
@@ -461,7 +461,7 @@
 
                     <!-- 提示词输入区域 -->
                     <div class="draw-card">
-                        <div class="section-title">输入提示词</div>
+                        <div class="draw-section-title">输入提示词</div>
                         <div class="prompt-input">
                             <textarea v-model="prompt" :placeholder="getPlaceholder()" maxlength="1000">
                             </textarea>
@@ -471,7 +471,7 @@
 
                     <!-- 参考图上传区域 -->
                     <div class="draw-card" v-if="showReferenceUpload">
-                        <div class="section-title">上传参考图</div>
+                        <div class="draw-section-title">上传参考图</div>
                         <div class="upload-area">
                             <div class="upload-group" v-for="(type, index) in currentTemplateConfig.reference.types"
                                 :key="index">
