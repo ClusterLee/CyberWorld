@@ -2,132 +2,113 @@ import logging
 
 logger = logging.getLogger('ComfyFog')
 
+from . import fog_manager
+
 def fog_status(req):
     """
-    获取节点当前状态
+    获取Fog节点当前状态
     
     请求方式：GET /fog/status
     
-    响应格式：
-    {
-        "status": {
-            "enabled": bool,            # 节点是否启用
-            "current_task": {
-                "id": str,              # 当前任务ID，如果没有则为null
-                "status": str           # "processing" 或 "idle"
-            },
-            "schedule": [               # 调度时间段列表
-                {
-                    "start": "HH:MM",   # 开始时间
-                    "end": "HH:MM"      # 结束时间
-                }
-            ],
-            "last_error": str          # 最近的错误信息，如果没有则为null
+    Returns:
+        {
+            "status": {
+                "enabled": bool,        # 是否启用
+                "connected": bool,      # 是否连接到任务中心
+                "scheduler_active": bool,  # 调度器是否活跃
+                "current_task": {       # 当前任务信息，无任务时为null
+                    "id": str,          # 任务ID
+                    "status": str,      # 任务状态：processing/completed/failed
+                    "started_at": str,  # 开始时间，ISO格式
+                    "progress": float   # 进度，0-1
+                },
+                "schedule": [           # 调度时间段列表
+                    {
+                        "start": str,   # 开始时间，格式 "HH:MM"
+                        "end": str      # 结束时间，格式 "HH:MM"
+                    }
+                ]
+            }
         }
-    }
     """
-    try:
-        node = req.node
-        status = node.get_status()
-        logger.debug(f"Status requested: {status}")
-        return {"status": status}
-    except Exception as e:
-        logger.error(f"Error getting status: {e}")
-        return {"error": str(e)}
+    return {"status": fog_manager.get_status()}
 
 def fog_update_config(req):
     """
-    更新节点配置
+    更新Fog节点配置
     
     请求方式：POST /fog/config
     
-    请求格式：
+    请求体：
     {
-        "enabled": bool,               # 是否启用节点
-        "schedule": [                  # 调度时间段列表
+        "enabled": bool,               # 可选，是否启用
+        "task_center_url": str,        # 可选，任务中心URL
+        "schedule": [                  # 可选，调度时间段
             {
-                "start": "HH:MM",      # 开始时间
-                "end": "HH:MM"         # 结束时间
+                "start": str,          # 开始时间，格式 "HH:MM"
+                "end": str            # 结束时间，格式 "HH:MM"
             }
         ],
-        "task_center_url": str        # 任务中心URL
+        "max_tasks_per_day": int,     # 可选，每日最大任务数
+        "min_gpu_memory": int,        # 可选，最小GPU内存要求(MB)
+        "retry_interval": int,        # 可选，重试间隔(秒)
+        "max_retries": int           # 可选，最大重试次数
     }
     
-    响应格式：
-    {
-        "status": "success",           # 操作状态
-        "config": {                    # 更新后的完整配置
-            "enabled": bool,
-            "schedule": [...],
-            "task_center_url": str
+    Returns:
+        成功：
+        {
+            "status": "success"
         }
-    }
+        
+        失败：
+        {
+            "status": "error",
+            "message": str            # 错误信息
+        }
     """
-    try:
-        node = req.node
-        config_data = req.json
-        result = node.update_config(config_data)
-        logger.info("Config updated via API")
-        return result
-    except Exception as e:
-        logger.error(f"Error updating config: {e}")
-        return {"error": str(e)}
+    return fog_manager.update_config(req.json)
 
 def fog_history(req):
     """
     获取任务执行历史
     
-    请求方式：GET /fog/history?limit=10
+    请求方式：GET /fog/history
     
     查询参数：
-    - limit: int, 可选，默认10，返回的历史记录数量
+        limit: int       # 可选，返回的记录数量，默认10
+        status: str      # 可选，过滤状态：completed/failed
     
-    响应格式：
-    {
-        "history": [
-            {
-                "task_id": str,         # 任务ID
-                "status": str,          # "completed" 或 "failed"
-                "timestamp": str,       # ISO格式的时间戳
-                "error": str           # 如果失败，则包含错误信息
-            }
-        ]
-    }
+    Returns:
+        {
+            "history": [
+                {
+                    "task_id": str,    # 任务ID
+                    "status": str,     # 状态：completed/failed
+                    "started_at": str, # 开始时间，ISO格式
+                    "completed_at": str,# 完成时间，ISO格式
+                    "error": str       # 可选，失败原因
+                }
+            ]
+        }
     """
-    try:
-        node = req.node
-        limit = int(req.query.get("limit", 10))
-        history = node.get_history(limit)
-        logger.debug(f"History requested, limit: {limit}")
-        return {"history": history}
-    except Exception as e:
-        logger.error(f"Error getting history: {e}")
-        return {"error": str(e)}
+    limit = int(req.query.get('limit', 10))
+    status = req.query.get('status')
+    return {"history": fog_manager.get_history(limit, status)}
 
 def fog_clear_history(req):
     """
-    清除历史记录
+    清除任务历史
     
     请求方式：POST /fog/history/clear
     
-    响应格式：
-    {
-        "status": "success"            # 操作状态
-    }
-    
-    错误响应：
-    {
-        "error": str                   # 错误信息
-    }
+    Returns:
+        {
+            "status": "success"
+        }
     """
-    try:
-        node = req.node
-        node.clear_history()
-        logger.info("History cleared via API")
-        return {"status": "success"}
-    except Exception as e:
-        logger.error(f"Error clearing history: {e}")
-        return {"error": str(e)}
+    fog_manager.clear_history()
+    return {"status": "success"}
 
 # ComfyUI路由定义
 ROUTES = [
