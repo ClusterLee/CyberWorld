@@ -1,9 +1,11 @@
+import os
+import json
+import time
 import threading
 import logging
 from typing import Optional
 from .fog_client import FogClient
 from .fog_scheduler import FogScheduler
-import os
 
 logger = logging.getLogger('ComfyFog')
 
@@ -27,8 +29,9 @@ class FogManager:
             self.running = True
             self._start_monitor_thread()
             
-            # 如果有任何资源文件路径，也需要相应调整
-            self.web_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "web")
+            
+            self.history = []
+            self.max_history = 100
             
             logger.info("FogManager initialized successfully")
             
@@ -110,4 +113,35 @@ class FogManager:
             if hasattr(self, 'client'):
                 self.client.session.close()
         except Exception as e:
-            logger.error(f"Error during cleanup: {e}") 
+            logger.error(f"Error during cleanup: {e}")
+
+    def _load_config(self):
+        """加载配置文件"""
+        try:
+            if os.path.exists(self.config_file):
+                with open(self.config_file, 'r') as f:
+                    return json.load(f)
+            return {}  # 默认空配置
+        except Exception as e:
+            logger.error(f"Error loading config: {e}")
+            return {}
+            
+    def _save_config(self):
+        """保存配置文件"""
+        try:
+            with open(self.config_file, 'w') as f:
+                json.dump(self.config, f, indent=2)
+        except Exception as e:
+            logger.error(f"Error saving config: {e}")
+
+    def get_history(self, limit: int = 10, status: Optional[str] = None):
+        """获取任务历史"""
+        filtered_history = self.history
+        if status:
+            filtered_history = [h for h in filtered_history if h['status'] == status]
+        return filtered_history[-limit:]
+        
+    def clear_history(self):
+        """清除历史记录"""
+        self.history = []
+        

@@ -6,8 +6,6 @@ import { api } from "../../scripts/api.js";
 // api: ComfyUI的API调用工具，用于与后端通信
 
 // 手动加载CSS
-import { app } from "../../scripts/app.js";
-
 // 创建link元素加载CSS
 function loadCSS() {
     const link = document.createElement('link');
@@ -150,25 +148,16 @@ app.registerExtension({
     // 从后端获取最新状态并更新UI
     async updateStatus() {
         try {
-            // 调用后端API获取状态
             const response = await api.fetchApi('/fog/status');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
             const data = await response.json();
-            
-            // 更新状态显示
-            document.getElementById('fog-running-status').textContent = 
-                data.status.enabled ? 'Yes' : 'No';
-            document.getElementById('fog-enabled').checked = 
-                data.status.enabled;
-            document.getElementById('fog-current-task').textContent = 
-                data.status.current_task?.id || 'None';
-                
-            // 更新调度时间列表
-            this.updateScheduleList(data.status.schedule || []);
-            
-            // 更新历史记录
-            await this.updateHistory();
+            updateUI(data);
         } catch (error) {
-            console.error('Failed to update status:', error);
+            console.error('Error updating status:', error);
+            // 显示错误信息给用户
+            showError('Failed to update status');
         }
     },
     
@@ -233,3 +222,11 @@ app.registerExtension({
         await this.updateConfig({ schedule });
     }
 });
+
+function showError(message) {
+    // 添加错误提示UI
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'fog-error';
+    errorDiv.textContent = message;
+    // ... 显示错误信息的逻辑
+}

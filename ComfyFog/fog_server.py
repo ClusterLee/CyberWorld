@@ -31,7 +31,11 @@ def fog_status(req):
             }
         }
     """
-    return {"status": fog_manager.get_status()}
+    try:
+        return {"status": fog_manager.get_status()}
+    except Exception as e:
+        logger.error(f"Error getting status: {e}")
+        return {"status": "error", "message": str(e)}
 
 def fog_update_config(req):
     """
@@ -67,7 +71,13 @@ def fog_update_config(req):
             "message": str            # 错误信息
         }
     """
-    return fog_manager.update_config(req.json)
+    try:
+        if not req.json:
+            raise ValueError("Request body is empty")
+        return fog_manager.update_config(req.json)
+    except Exception as e:
+        logger.error(f"Error updating config: {e}")
+        return {"status": "error", "message": str(e)}
 
 def fog_history(req):
     """

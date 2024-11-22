@@ -1,3 +1,4 @@
+import sys
 import os
 import json
 import time
@@ -6,9 +7,17 @@ import logging
 import base64
 import websocket
 import threading
-from queue import Queue
+from queue import Queue, Empty
 from typing import Optional
-from .fog_client import FogClient  # 显式导入FogClient类
+
+# 获取 ComfyUI 的路径
+COMFY_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if COMFY_PATH not in sys.path:
+    sys.path.append(COMFY_PATH)
+
+# 正确导入 ComfyUI 的模块
+from execution import PromptQueue
+from server import PromptServer
 
 logger = logging.getLogger('ComfyFog')
 
@@ -31,7 +40,7 @@ class FogScheduler:
             raise ValueError("fog_client must be an instance of FogClient")
             
         self.fog_client = fog_client
-        self.current_task: Optional[dict] = None  # 当前正在处理的任务
+        self.current_task: Optional[dict] = None  # 当前���在处理的任务
         self.task_history = []    # 任务历史记录
         self.max_history = 100
         self.queue_status = {"busy": False, "tasks": 0}
@@ -39,18 +48,23 @@ class FogScheduler:
         self.ws = None           # WebSocket连接
         self.result_queue = Queue()  # 用于存储WebSocket结果的队列
         self.current_prompt_id = None  # 当前正在执行的prompt ID
+        self.schedule = []  # 添加调度时间列表
         
     def check_queue_status(self):
         """检查ComfyUI队列状态"""
         try:
-            import execution
-            prompt_queue = execution.get_queue()
+            # 获取当前执行队列
+            prompt_queue = PromptQueue.instance.get_current_queue()
+            
+            # 检查队列状态
             self.queue_status = {
-                "busy": not prompt_queue.empty(),
-                "tasks": prompt_queue.qsize()
+                "busy": prompt_queue.is_running() or not prompt_queue.queue.empty(),
+                "tasks": prompt_queue.queue.qsize()
             }
+            
             logger.debug(f"Queue status: {self.queue_status}")
             return not self.queue_status["busy"]
+            
         except Exception as e:
             logger.error(f"Error checking queue status: {e}")
             return False
@@ -79,8 +93,8 @@ class FogScheduler:
                 if not workflow:
                     raise ValueError("Empty workflow in task")
                     
-                import execution
-                prompt_id = execution.execute(workflow).get('prompt_id')
+                # 使用 PromptServer 执行任务
+                prompt_id = PromptServer.instance.prompt_queue.put(workflow)
                 if not prompt_id:
                     raise ValueError("Failed to get prompt_id from ComfyUI")
                     
@@ -148,7 +162,7 @@ class FogScheduler:
                         logger.info("Task execution completed")
                         return self._process_execution_result(results)
                         
-                except Queue.Empty:
+                except Empty:
                     # 每次超时都检查一下WebSocket连接状态
                     if not self._check_websocket_health():
                         raise ConnectionError("WebSocket connection lost")
@@ -198,7 +212,7 @@ class FogScheduler:
     def _on_message(self, ws, message):
         """
         处理WebSocket消息
-        处理不同类型的消息：
+        处理不同型的消息：
         - executing: 任务执行状态
         - executed: 节点输出结果
         - error: 错误信息
@@ -301,7 +315,7 @@ class FogScheduler:
             raise
             
     def _get_image_path(self, filename):
-        """获取图片的完整路径"""
+        """获取图片的完整��径"""
         try:
             import folder_paths
             output_dir = folder_paths.get_output_directory()
@@ -426,7 +440,7 @@ class FogScheduler:
             
             processed_result = {
                 "images": [],
-                "node_outputs": result  # 保留原始节点输出信息
+                "node_outputs": result  # 保��原始节点输出信息
             }
             
             # 获取ComfyUI的输出目录
@@ -463,3 +477,24 @@ class FogScheduler:
         except Exception as e:
             logger.error(f"Error processing images: {e}")
             raise
+
+    def is_in_schedule(self) -> bool:
+        """检查当前时间是否在调度时间内"""
+        if not self.schedule:
+            return True  # 没有设置调度时间时默认允许执行
+            
+        current_time = datetime.now().strftime("%H:%M")
+        for slot in self.schedule:
+            if slot['start'] <= current_time <= slot['end']:
+                return True
+        return False
+
+    def __del__(self):
+        """清理资源"""
+        try:
+            if self.ws:
+                self.ws.close()
+            if hasattr(self, 'ws_thread') and self.ws_thread:
+                self.ws_thread.join(timeout=1)
+        except Exception as e:
+            logger.error(f"Error cleaning up FogScheduler: {e}")

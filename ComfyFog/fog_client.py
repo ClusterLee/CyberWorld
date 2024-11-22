@@ -16,6 +16,7 @@ class FogClient:
     def __init__(self, task_center_url: str):
         self.task_center_url = task_center_url
         self.session = self._create_session()
+        self.timeout = 10  # 添加默认超时时间
         
     def _create_session(self):
         """
@@ -48,7 +49,7 @@ class FogClient:
             response = self.session.get(
                 f"{self.task_center_url}/task",
                 headers={'User-Agent': 'ComfyFog/1.0'},
-                timeout=10
+                timeout=self.timeout
             )
             
             if response.status_code == 200:
