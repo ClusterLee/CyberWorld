@@ -3,6 +3,7 @@ import logging
 from typing import Optional
 from .fog_client import FogClient
 from .fog_scheduler import FogScheduler
+import os
 
 logger = logging.getLogger('ComfyFog')
 
@@ -25,6 +26,9 @@ class FogManager:
             # 4. 启动监控线程
             self.running = True
             self._start_monitor_thread()
+            
+            # 如果有任何资源文件路径，也需要相应调整
+            self.web_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "web")
             
             logger.info("FogManager initialized successfully")
             

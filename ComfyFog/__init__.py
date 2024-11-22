@@ -12,11 +12,6 @@ try:
     if not os.path.exists(WEB_DIRECTORY):
         os.makedirs(WEB_DIRECTORY)
         
-    # 确保js目录存在
-    js_dir = os.path.join(WEB_DIRECTORY, "js")
-    if not os.path.exists(js_dir):
-        os.makedirs(js_dir)
-
     # 2. 导入核心组件
     from .fog_server import ROUTES
     from .fog_manager import FogManager  # 新的管理类

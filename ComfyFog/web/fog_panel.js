@@ -1,9 +1,21 @@
-import { app } from "../../../scripts/app.js";
-import { api } from "../../../scripts/api.js";
+import { app } from "../../scripts/app.js";
+import { api } from "../../scripts/api.js";
 
 // 导入ComfyUI的核心模块
 // app: ComfyUI的主应用对象，提供扩展注册功能
 // api: ComfyUI的API调用工具，用于与后端通信
+
+// 手动加载CSS
+import { app } from "../../scripts/app.js";
+
+// 创建link元素加载CSS
+function loadCSS() {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = './extensions/ComfyFog/web/fog_panel.css';
+    document.head.appendChild(link);
+}
 
 // 注册ComfyUI扩展
 // ComfyUI启动时会自动加载web/js目录下的所有js文件
@@ -15,6 +27,9 @@ app.registerExtension({
     // setup方法在ComfyUI初始化时被调用
     // 用于设置扩展的初始状态和UI
     async setup() {
+        // 加载CSS
+        loadCSS();
+        
         // 1. 创建菜单入口
         await this.createMenu();
         
